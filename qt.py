@@ -14,28 +14,29 @@ import psycopg2
 class Ui_LoginWindow(object):
     def setupUi(self, LoginWindow):
         LoginWindow.setObjectName("LoginWindow")
+        #set the size of the window
         LoginWindow.resize(800, 600)
-        self.main_window = QtWidgets.QWidget(LoginWindow)
-        self.main_window.setStyleSheet("background-color: rgb(165, 200, 255);")
-        self.main_window.setObjectName("main_window")
-        self.username = QtWidgets.QPlainTextEdit(self.main_window)
+        self.login_window = QtWidgets.QWidget(LoginWindow)
+        self.login_window.setStyleSheet("background-color: rgb(165, 200, 255);")
+        self.login_window.setObjectName("MainWindow")
+        self.username = QtWidgets.QPlainTextEdit(self.login_window)
         self.username.setGeometry(QtCore.QRect(310, 140, 171, 31))
         self.username.setAutoFillBackground(False)
         self.username.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.username.setObjectName("username")
-        self.password = QtWidgets.QTextEdit(self.main_window)
+        self.password = QtWidgets.QTextEdit(self.login_window)
         self.password.setGeometry(QtCore.QRect(310, 230, 171, 31))
         self.password.setAutoFillBackground(False)
         self.password.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.password.setObjectName("password")
-        self.Login = QtWidgets.QPushButton(self.main_window)
-        self.Login.setGeometry(QtCore.QRect(360, 340, 75, 23))
-        self.Login.setStyleSheet("\n"
+        self.login_btn = QtWidgets.QPushButton(self.login_window)
+        self.login_btn.setGeometry(QtCore.QRect(360, 340, 75, 23))
+        self.login_btn.setStyleSheet("\n"
 "color: rgb(0, 0, 0);\n"
 "background-color: rgb(255, 255, 255);")
-        self.Login.setObjectName("Login")
-        self.Login.clicked.connect(self.login)
-        LoginWindow.setCentralWidget(self.main_window)
+        self.login_btn.setObjectName("Login")
+        self.login_btn.clicked.connect(self.login)
+        LoginWindow.setCentralWidget(self.login_window)
         self.menubar = QtWidgets.QMenuBar(LoginWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
         self.menubar.setObjectName("menubar")
@@ -52,8 +53,8 @@ class Ui_LoginWindow(object):
 
     def retranslateUi(self, LoginWindow):
         _translate = QtCore.QCoreApplication.translate
-        LoginWindow.setWindowTitle(_translate("LoginWindow", "MainWindow"))
-        self.Login.setText(_translate("LoginWindow", "Login"))
+        LoginWindow.setWindowTitle(_translate("LoginWindow", "MBPI"))
+        self.login_btn.setText(_translate("LoginWindow", "Login"))
         self.toolBar.setWindowTitle(_translate("LoginWindow", "toolBar"))
 
 
@@ -68,8 +69,16 @@ class Ui_LoginWindow(object):
                 user= username,
                 password=pass1)
             print("Connected Successfully")
+            self.clear_widgets()
         except:
             print("Invalid Credentials")
+
+    def clear_widgets(self):
+        self.username.deleteLater()
+        self.password.deleteLater()
+        LoginWindow.resize(1200,800)
+        self.login_btn.deleteLater()
+        LoginWindow.move(360,140)
 
 
 
