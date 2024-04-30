@@ -73,8 +73,9 @@ class Ui_LoginWindow(object):
         self.login_btn.deleteLater()
 
         # Setting the size and position of the main window
-        LoginWindow.resize(1200, 800)
+        LoginWindow.resize(1200, 900)
         LoginWindow.move(360, 140)
+        LoginWindow.setStyleSheet("background-color: white;")
 
         self.main_table()
 
@@ -88,19 +89,30 @@ class Ui_LoginWindow(object):
     #create an excel like table object
     def main_table(self):
         table = QtWidgets.QTableWidget(self.login_window)
-        table.setGeometry(QtCore.QRect(100, 100, 1000, 550))
+
+        # Set table size
+        table.setGeometry(QtCore.QRect(100, 50, 1000, 550))
         table.setObjectName("table")
-        row = len(self.get_tablesize())
-        columns = len(self.get_tablesize()[0])
-        print(row,columns)
-        table.setColumnCount(columns)  # Example: Set number of columns
-        table.setRowCount(row)  # Example: Set number of rows
-        # Example: Populate table with data
-        for i in range(5):
-            for j in range(3):
-                item = QtWidgets.QTableWidgetItem(f"Row {i + 1}, Col {j + 1}")
+        table.setStyleSheet("background-color: white;")
+
+        # Fetch table data and column names
+        query_result = self.get_tablesize()
+        cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_name = 'tbl_maintenance';")
+        column_names = [col[0] for col in cursor.fetchall()]
+
+        rows = len(query_result)
+        columns = len(query_result[0])
+
+        table.setColumnCount(columns)  # Set number of columns
+        table.setRowCount(rows)  # Set number of rows
+
+        # Populate table with data
+        for i in range(rows):
+            for j in range(columns):
+                item = QtWidgets.QTableWidgetItem(str(query_result[i][j]))  # Convert to string
                 table.setItem(i, j, item)
-        table.setHorizontalHeaderLabels(["Column 1", "Column 2", "Column 3"])
+
+        table.setHorizontalHeaderLabels(column_names)
         table.show()
 
 
