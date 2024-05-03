@@ -45,6 +45,7 @@ class Ui_LoginWindow(object):
         self.retranslateUi(LoginWindow)
         QtCore.QMetaObject.connectSlotsByName(LoginWindow)
 
+
     def retranslateUi(self, LoginWindow):
         _translate = QtCore.QCoreApplication.translate
         LoginWindow.setWindowTitle(_translate("LoginWindow", "MBPI"))
@@ -58,7 +59,7 @@ class Ui_LoginWindow(object):
             conn = psycopg2.connect(
                 host='localhost',
                 port=5432,
-                dbname="postgres",
+                dbname="MBPI",
                 user=username,
                 password=pass1)
             global cursor
@@ -78,12 +79,12 @@ class Ui_LoginWindow(object):
         self.login_btn.deleteLater()
 
         # Setting the size and position of the main window
-        LoginWindow.resize(1200, 900)
+        LoginWindow.setFixedSize(1200, 900)  #fixed size
         LoginWindow.move(360, 140)
 
         #add the table to the Window
         self.main_table()
-
+        self.table.itemSelectionChanged.connect(self.show_selected)
         #Itemname textbox
         self.itemname_box = QtWidgets.QLineEdit(self.login_window)
         self.itemname_box.setGeometry(QtCore.QRect(100, 620, 190, 30))
@@ -164,22 +165,68 @@ class Ui_LoginWindow(object):
         self.remarks_label.setFont(QtGui.QFont("Arial", 11))
         self.remarks_label.show()
 
+        #This part below is for showing logs
+
+
+        #Encoded By Label
+        self.encoded_by = QtWidgets.QLabel(self.login_window)
+        self.encoded_by.setText("Encoded By: ")
+        self.encoded_by.setGeometry(QtCore.QRect(100, 700, 100, 25))
+        self.encoded_by.setAutoFillBackground(False)
+        self.encoded_by.setFont(QtGui.QFont("Arial", 12))
+        self.encoded_by.setStyleSheet('color: red')
+        self.encoded_by.show()
+
+        #Encoded Date Label
+        self.encoded_date = QtWidgets.QLabel(self.login_window)
+        self.encoded_date.setText("Date Encoded: ")
+        self.encoded_date.setGeometry(QtCore.QRect(100, 723, 100, 25))
+        self.encoded_date.setAutoFillBackground(False)
+        self.encoded_date.setFont(QtGui.QFont("Arial", 12))
+        self.encoded_date.setStyleSheet('color: red')
+        self.encoded_date.show()
+
+        #Updated By Label
+        self.updated_by = QtWidgets.QLabel(self.login_window)
+        self.updated_by.setText("Updated By: ")
+        self.updated_by.setGeometry(QtCore.QRect(100, 746, 100, 25))
+        self.updated_by.setAutoFillBackground(False)
+        self.updated_by.setFont(QtGui.QFont("Arial", 12))
+        self.updated_by.setStyleSheet('color: red')
+        self.updated_by.show()
+
+        #Date Updated Label
+        self.updated_date = QtWidgets.QLabel(self.login_window)
+        self.updated_date.setText("Updated By: ")
+        self.updated_date.setGeometry(QtCore.QRect(100, 769, 100, 25))
+        self.updated_date.setAutoFillBackground(False)
+        self.updated_date.setFont(QtGui.QFont("Arial", 12))
+        self.updated_date.setStyleSheet('color: red')
+        self.updated_date.show()
+
+
+
+
 
     # getting the table dimension
     def get_tablesize(self):
-        cursor.execute("SELECT * FROM table_maintenance")
+        cursor.execute("SELECT * FROM tbl_maintenance")
         result = cursor.fetchall()
         return result
 
 
+
+
+
     #create an excel like table object
     def main_table(self):
-        table = QtWidgets.QTableWidget(self.login_window)
+
+        self.table = QtWidgets.QTableWidget(self.login_window)
 
         # Set table size
-        table.setGeometry(QtCore.QRect(100, 50, 1000, 550))
-        table.setObjectName("table")
-        table.setStyleSheet("background-color: white;")
+        self.table.setGeometry(QtCore.QRect(100, 50, 1000, 550))
+        self.table.setObjectName("table")
+        self.table.setStyleSheet("background-color: white;")
 
         # Fetch table data and column names
         query_result = self.get_tablesize()
@@ -189,18 +236,26 @@ class Ui_LoginWindow(object):
         rows = len(query_result)
         columns = len(query_result[0])
 
-        table.setColumnCount(columns)  # Set number of columns
-        table.setRowCount(rows)  # Set number of rows
+        self.table.setColumnCount(columns)  # Set number of columns
+        self.table.setRowCount(rows)  # Set number of rows
 
         # Populate table with data
         for i in range(rows):
             for j in range(columns):
                 item = QtWidgets.QTableWidgetItem(str(query_result[i][j]))  # Convert to string
-                table.setItem(i, j, item)
+                self.table.setItem(i, j, item)
 
-        table.setHorizontalHeaderLabels(column_names)
-        table.show()
+        self.table.setHorizontalHeaderLabels(column_names)
+        self.table.show()
 
+        self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+
+
+    def show_selected(self):
+        selected = self.table.selectedItems()
+        if selected:
+            selected_rows = set(item.row() for item in selected)
+            print("Selected rows:", selected_rows)
 
 
 if __name__ == "__main__":
