@@ -56,14 +56,14 @@ class Ui_LoginWindow(object):
         username = self.username.text()
         pass1 = self.password.text()
         try:
-            conn = psycopg2.connect(
+            self.conn = psycopg2.connect(
                 host='localhost',
                 port=5432,
                 dbname="MBPI",
                 user=username,
                 password=pass1)
             global cursor
-            cursor = conn.cursor()
+            cursor = self.conn.cursor()
             print("Connected Successfully")
             self.launch_main()
         except Exception as e:
@@ -204,6 +204,38 @@ class Ui_LoginWindow(object):
         self.updated_date.setStyleSheet('color: red')
         self.updated_date.show()
 
+        #Added Buttons
+
+        #Insert Button
+        self.insert_btn = QtWidgets.QPushButton(self.login_window)
+        self.insert_btn.setText("Add")
+        self.insert_btn.setGeometry(QtCore.QRect(850, 700, 100, 50))
+        self.insert_btn.clicked.connect(self.add_btn_clicked)
+        self.insert_btn.show()
+
+        #Update Button
+        self.update_btn = QtWidgets.QPushButton(self.login_window)
+        self.update_btn.setText("Update")
+        self.update_btn.setGeometry(QtCore.QRect(1000, 700, 100, 50))
+        self.update_btn.show()
+
+        #Delete Button
+        self.delete_btn = QtWidgets.QPushButton(self.login_window)
+        self.delete_btn.setText("Delete")
+        self.delete_btn.setGeometry(QtCore.QRect(850, 780, 100, 50))
+        self.delete_btn.show()
+
+        #Search Button
+        self.search_btn = QtWidgets.QPushButton(self.login_window)
+        self.search_btn.setText("Update")
+        self.search_btn.setGeometry(QtCore.QRect(1000, 780, 100, 50))
+        self.search_btn.show()
+
+
+
+
+
+
 
     # getting the table dimension
     def get_tablesize(self):
@@ -221,6 +253,7 @@ class Ui_LoginWindow(object):
         self.table.setGeometry(QtCore.QRect(100, 50, 1000, 550))
         self.table.setObjectName("table")
         self.table.setStyleSheet("background-color: white;")
+        self.table.verticalHeader().setVisible(False)
 
         # Fetch table data and column names
         query_result = self.get_tablesize()
@@ -274,7 +307,31 @@ class Ui_LoginWindow(object):
             self.updated_date.setText(f"Updated By: {self.row_values['last_updated']}")
 
 
+    def parse_inputs(self):
+        self.user_inputs = {
+            "item_name" : self.itemname_box.text(),
+            "quantity" : self.quantity_box.text(),
+            "unit" : self.unit_box.text(),
+            "model" : self.model_box.text(),
+            "remarks" : self.remarks_box.text()
+        }
 
+
+    #Execute when add button is clicked
+    def add_btn_clicked(self):
+        try:
+            print("test")
+            self.parse_inputs()
+            cursor.execute(f"""
+            INSERT INTO tbl_maintenance(itemname, quantity, unit, model_name, remarks,encoded_by)
+            VALUES('{self.user_inputs["item_name"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', '{self.user_inputs["model"]}', '{self.user_inputs["remarks"]}', )
+            
+            """)
+            self.conn.commit()
+
+
+        except Exception as e:
+            print(e)
 
 
 
