@@ -171,7 +171,7 @@ class Ui_LoginWindow(object):
         #Encoded By Label
         self.encoded_by = QtWidgets.QLabel(self.login_window)
         self.encoded_by.setText("Encoded By: ")
-        self.encoded_by.setGeometry(QtCore.QRect(100, 700, 100, 25))
+        self.encoded_by.setGeometry(QtCore.QRect(100, 700, 400, 25))
         self.encoded_by.setAutoFillBackground(False)
         self.encoded_by.setFont(QtGui.QFont("Arial", 12))
         self.encoded_by.setStyleSheet('color: red')
@@ -180,7 +180,7 @@ class Ui_LoginWindow(object):
         #Encoded Date Label
         self.encoded_date = QtWidgets.QLabel(self.login_window)
         self.encoded_date.setText("Date Encoded: ")
-        self.encoded_date.setGeometry(QtCore.QRect(100, 723, 100, 25))
+        self.encoded_date.setGeometry(QtCore.QRect(100, 723, 400, 25))
         self.encoded_date.setAutoFillBackground(False)
         self.encoded_date.setFont(QtGui.QFont("Arial", 12))
         self.encoded_date.setStyleSheet('color: red')
@@ -189,7 +189,7 @@ class Ui_LoginWindow(object):
         #Updated By Label
         self.updated_by = QtWidgets.QLabel(self.login_window)
         self.updated_by.setText("Updated By: ")
-        self.updated_by.setGeometry(QtCore.QRect(100, 746, 100, 25))
+        self.updated_by.setGeometry(QtCore.QRect(100, 746, 400, 25))
         self.updated_by.setAutoFillBackground(False)
         self.updated_by.setFont(QtGui.QFont("Arial", 12))
         self.updated_by.setStyleSheet('color: red')
@@ -198,14 +198,11 @@ class Ui_LoginWindow(object):
         #Date Updated Label
         self.updated_date = QtWidgets.QLabel(self.login_window)
         self.updated_date.setText("Updated By: ")
-        self.updated_date.setGeometry(QtCore.QRect(100, 769, 100, 25))
+        self.updated_date.setGeometry(QtCore.QRect(100, 769, 400, 25))
         self.updated_date.setAutoFillBackground(False)
         self.updated_date.setFont(QtGui.QFont("Arial", 12))
         self.updated_date.setStyleSheet('color: red')
         self.updated_date.show()
-
-
-
 
 
     # getting the table dimension
@@ -213,9 +210,6 @@ class Ui_LoginWindow(object):
         cursor.execute("SELECT * FROM tbl_maintenance")
         result = cursor.fetchall()
         return result
-
-
-
 
 
     #create an excel like table object
@@ -254,7 +248,35 @@ class Ui_LoginWindow(object):
         selected = self.table.selectedItems()
         if selected:
             items = [item.text() for item in selected]
-            print(len(selected))
+            items = items[:self.columns]
+            self.row_values = {
+                "item_name" : items[1],
+                "quantity" : str(items[2]),
+                "unit" : items[3],
+                "model" : items[4],
+                "remarks" : items[5],
+                "encoded_by" : items[7],
+                "date_encoded" : items[8],
+                "updated_by" : items[9],
+                "last_updated" : items[10]
+
+            }
+            #show the selected values in the UI
+            itemname = self.itemname_box.setText(self.row_values["item_name"])
+            quantity = self.quantity_box.setText(self.row_values["quantity"])
+            unit = self.unit_box.setText(self.row_values["unit"])
+            model =self.model_box.setText(self.row_values["model"])
+            remark = self.remarks_box.setText(self.row_values["remarks"])
+
+            self.encoded_date.setText(f"Updated By: {self.row_values['date_encoded']}")
+            self.encoded_by.setText(f"Updated By: {self.row_values['encoded_by']}")
+            self.updated_by.setText(f"Updated By: {self.row_values['updated_by']}")
+            self.updated_date.setText(f"Updated By: {self.row_values['last_updated']}")
+
+
+
+
+
 
 
 
