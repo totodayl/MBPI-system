@@ -55,6 +55,7 @@ class Ui_LoginWindow(object):
     def login(self):
         username = self.username.text()
         pass1 = self.password.text()
+
         try:
             self.conn = psycopg2.connect(
                 host='localhost',
@@ -166,7 +167,6 @@ class Ui_LoginWindow(object):
         self.remarks_label.show()
 
         #This part below is for showing logs
-
 
         #Encoded By Label
         self.encoded_by = QtWidgets.QLabel(self.login_window)
@@ -315,20 +315,27 @@ class Ui_LoginWindow(object):
             "model" : self.model_box.text(),
             "remarks" : self.remarks_box.text()
         }
+    def clear_inputs(self):
+        self.itemname_box.clear()
+        self.remarks_box.clear()
+        self.unit_box.clear()
+        self.quantity_box.clear()
+        self.model_box.clear()
 
 
     #Execute when add button is clicked
     def add_btn_clicked(self):
         try:
-            print("test")
+
             self.parse_inputs()
             cursor.execute(f"""
             INSERT INTO tbl_maintenance(itemname, quantity, unit, model_name, remarks,encoded_by)
-            VALUES('{self.user_inputs["item_name"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', '{self.user_inputs["model"]}', '{self.user_inputs["remarks"]}', )
+            VALUES('{self.user_inputs["item_name"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', '{self.user_inputs["model"]}', '{self.user_inputs["remarks"]}','admin')
             
             """)
             self.conn.commit()
-
+            self.clear_inputs()
+            self.main_table()
 
         except Exception as e:
             print(e)
