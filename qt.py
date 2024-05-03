@@ -84,7 +84,7 @@ class Ui_LoginWindow(object):
 
         #add the table to the Window
         self.main_table()
-        self.table.itemSelectionChanged.connect(self.show_selected)
+        self.table.itemSelectionChanged.connect(self.show_selected) #Selection updates
         #Itemname textbox
         self.itemname_box = QtWidgets.QLineEdit(self.login_window)
         self.itemname_box.setGeometry(QtCore.QRect(100, 620, 190, 30))
@@ -233,29 +233,29 @@ class Ui_LoginWindow(object):
         cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_name = 'tbl_maintenance';") #query for getting the table names
         column_names = [col[0] for col in cursor.fetchall()]
 
-        rows = len(query_result)
-        columns = len(query_result[0])
+        self.rows = len(query_result)
+        self.columns = len(query_result[0])
 
-        self.table.setColumnCount(columns)  # Set number of columns
-        self.table.setRowCount(rows)  # Set number of rows
+        self.table.setColumnCount(self.columns)  # Set number of columns
+        self.table.setRowCount(self.rows)  # Set number of rows
 
         # Populate table with data
-        for i in range(rows):
-            for j in range(columns):
+        for i in range(self.rows):
+            for j in range(self.columns):
                 item = QtWidgets.QTableWidgetItem(str(query_result[i][j]))  # Convert to string
                 self.table.setItem(i, j, item)
 
         self.table.setHorizontalHeaderLabels(column_names)
         self.table.show()
-
         self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
 
     def show_selected(self):
         selected = self.table.selectedItems()
         if selected:
-            selected_rows = set(item.row() for item in selected)
-            print("Selected rows:", selected_rows)
+            items = [item.text() for item in selected]
+            print(len(selected))
+
 
 
 if __name__ == "__main__":
