@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import psycopg2
 import pandas as pd
+import datetime as dt
 
 class Ui_LoginWindow(object):
     def setupUi(self, LoginWindow):
@@ -9,16 +10,19 @@ class Ui_LoginWindow(object):
         self.login_window = QtWidgets.QWidget(LoginWindow)
         self.login_window.setStyleSheet("background-color: rgb(165, 200, 255);")
         self.login_window.setObjectName("MainWindow")
-        self.username = QtWidgets.QPlainTextEdit(self.login_window)
+        self.username = QtWidgets.QLineEdit(self.login_window)
         self.username.setGeometry(QtCore.QRect(310, 140, 171, 31))
         self.username.setAutoFillBackground(False)
         self.username.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.username.setObjectName("username")
-        self.password = QtWidgets.QTextEdit(self.login_window)
+        self.username.setText("postgres")
+        self.password = QtWidgets.QLineEdit(self.login_window)
         self.password.setGeometry(QtCore.QRect(310, 230, 171, 31))
         self.password.setAutoFillBackground(False)
         self.password.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.password.setObjectName("password")
+        self.password.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.password.setText("mbpi")
         self.login_btn = QtWidgets.QPushButton(self.login_window)
         self.login_btn.setGeometry(QtCore.QRect(360, 340, 75, 23))
         self.login_btn.setStyleSheet("\n"
@@ -48,13 +52,13 @@ class Ui_LoginWindow(object):
         self.toolBar.setWindowTitle(_translate("LoginWindow", "toolBar"))
 
     def login(self):
-        username = self.username.toPlainText()
-        pass1 = self.password.toPlainText()
+        username = self.username.text()
+        pass1 = self.password.text()
         try:
             conn = psycopg2.connect(
                 host='localhost',
                 port=5432,
-                dbname="MBPI",
+                dbname="postgres",
                 user=username,
                 password=pass1)
             global cursor
@@ -63,6 +67,7 @@ class Ui_LoginWindow(object):
             self.launch_main()
         except Exception as e:
             print("Invalid Credentials:", e)
+
 
 
     #This is the main window after login screen
@@ -75,13 +80,94 @@ class Ui_LoginWindow(object):
         # Setting the size and position of the main window
         LoginWindow.resize(1200, 900)
         LoginWindow.move(360, 140)
-        LoginWindow.setStyleSheet("background-color: white;")
 
+        #add the table to the Window
         self.main_table()
+
+        #Itemname textbox
+        self.itemname_box = QtWidgets.QLineEdit(self.login_window)
+        self.itemname_box.setGeometry(QtCore.QRect(100, 620, 190, 30))
+        self.itemname_box.setStyleSheet("background-color: white;")
+        self.itemname_box.setFont(QtGui.QFont("Arial", 11))
+        self.itemname_box.setAutoFillBackground(False)
+        self.itemname_box.show()
+
+        #Itemname Label
+        self.itemname_label = QtWidgets.QLabel(self.login_window)
+        self.itemname_label.setText("Item Name")
+        self.itemname_label.setGeometry(QtCore.QRect(155, 650, 100, 30))
+        self.itemname_label.setAutoFillBackground(False)
+        self.itemname_label.setFont(QtGui.QFont("Arial", 11))
+        self.itemname_label.show()
+
+        #Quantity textbox
+        self.quantity_box = QtWidgets.QLineEdit(self.login_window)
+        self.quantity_box.setGeometry(QtCore.QRect(340, 620, 70, 30))
+        self.quantity_box.setStyleSheet("background-color: white;")
+        self.quantity_box.setFont(QtGui.QFont("Arial", 11))
+        self.quantity_box.setAutoFillBackground(False)
+        self.quantity_box.show()
+
+        #Quantity Label
+        self.quantity_label = QtWidgets.QLabel(self.login_window)
+        self.quantity_label.setText("Quantity")
+        self.quantity_label.setGeometry(QtCore.QRect(345, 650, 70, 30))
+        self.quantity_label.setAutoFillBackground(False)
+        self.quantity_label.setFont(QtGui.QFont("Arial", 11))
+        self.quantity_label.show()
+
+        #Unit textbox
+        self.unit_box = QtWidgets.QLineEdit(self.login_window)
+        self.unit_box.setGeometry(QtCore.QRect(460, 620, 70, 30))
+        self.unit_box.setStyleSheet("background-color: white;")
+        self.unit_box.setFont(QtGui.QFont("Arial", 11))
+        self.unit_box.setAutoFillBackground(False)
+        self.unit_box.show()
+
+        #Unit Label
+        self.unit_label = QtWidgets.QLabel(self.login_window)
+        self.unit_label.setText("Unit")
+        self.unit_label.setGeometry(QtCore.QRect(480, 650, 70, 30))
+        self.unit_label.setAutoFillBackground(False)
+        self.unit_label.setFont(QtGui.QFont("Arial", 11))
+        self.unit_label.show()
+
+        #model textbox
+        self.model_box = QtWidgets.QLineEdit(self.login_window)
+        self.model_box.setGeometry(QtCore.QRect(600, 620, 190, 30))
+        self.model_box.setStyleSheet("background-color: white;")
+        self.model_box.setFont(QtGui.QFont("Arial", 10))
+        self.model_box.setAutoFillBackground(False)
+        self.model_box.show()
+
+        #model label
+        self.model_label = QtWidgets.QLabel(self.login_window)
+        self.model_label.setText("Model")
+        self.model_label.setGeometry(QtCore.QRect(680, 650, 70, 30))
+        self.model_label.setAutoFillBackground(False)
+        self.model_label.setFont(QtGui.QFont("Arial", 11))
+        self.model_label.show()
+
+        #remarks textbox
+        self.remarks_box = QtWidgets.QLineEdit(self.login_window)
+        self.remarks_box.setGeometry(QtCore.QRect(850, 620, 190, 30))
+        self.remarks_box.setStyleSheet("background-color: white;")
+        self.remarks_box.setFont(QtGui.QFont("Arial", 10))
+        self.remarks_box.setAutoFillBackground(False)
+        self.remarks_box.show()
+
+        #remarks label
+        self.remarks_label = QtWidgets.QLabel(self.login_window)
+        self.remarks_label.setText("Remarks")
+        self.remarks_label.setGeometry(QtCore.QRect(920, 650, 70, 30))
+        self.remarks_label.setAutoFillBackground(False)
+        self.remarks_label.setFont(QtGui.QFont("Arial", 11))
+        self.remarks_label.show()
+
 
     # getting the table dimension
     def get_tablesize(self):
-        cursor.execute("SELECT * FROM tbl_maintenance")
+        cursor.execute("SELECT * FROM table_maintenance")
         result = cursor.fetchall()
         return result
 
@@ -97,7 +183,7 @@ class Ui_LoginWindow(object):
 
         # Fetch table data and column names
         query_result = self.get_tablesize()
-        cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_name = 'tbl_maintenance';")
+        cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_name = 'tbl_maintenance';") #query for getting the table names
         column_names = [col[0] for col in cursor.fetchall()]
 
         rows = len(query_result)
