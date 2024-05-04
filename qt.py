@@ -73,9 +73,12 @@ class Ui_LoginWindow(object):
     # This is the main window after login screen
     def launch_main(self):
         # Delete widgets
-        self.username.deleteLater()
-        self.password.deleteLater()
-        self.login_btn.deleteLater()
+        try:
+            self.username.deleteLater()
+            self.password.deleteLater()
+            self.login_btn.deleteLater()
+        except:
+            pass
 
         # Setting the size and position of the main window
         LoginWindow.setFixedSize(1200, 900)  # fixed size
@@ -228,6 +231,7 @@ class Ui_LoginWindow(object):
         self.search_btn = QtWidgets.QPushButton(self.login_window)
         self.search_btn.setText("Update")
         self.search_btn.setGeometry(QtCore.QRect(1000, 780, 100, 50))
+        self.search_btn.clicked.connect(self.search_btn_clicked)
         self.search_btn.show()
 
     # getting the table dimension
@@ -301,7 +305,7 @@ class Ui_LoginWindow(object):
 
     def parse_inputs(self):
         self.user_inputs = {
-            "item_name": self.itemname_box.text(),
+            "itemname": self.itemname_box.text(),
             "quantity": self.quantity_box.text(),
             "unit": self.unit_box.text(),
             "model": self.model_box.text(),
@@ -354,6 +358,41 @@ class Ui_LoginWindow(object):
 
         except Exception as e:
             print(e)
+
+    def search_btn_clicked(self):
+        try:
+            self.parse_inputs()
+            #create a list of tuple condition query
+            querycon_list = []
+            for i, j in self.user_inputs.items():
+                if j == "":
+                    pass
+                else:
+                    querycon_list.append((i,j))
+            print(querycon_list)
+            query_con = ""
+
+            for items in querycon_list:
+                if items != querycon_list[-1]:
+                    query_con = query_con + items[0] + " = " + "'" + items[1] + "'" + " AND "
+                else:
+                    query_con = query_con + items[0] + " = " + "'" + items[1] + "'"
+            print(query_con)
+
+            cursor.execute(f"""
+            SELECT * FROM tbl_maintenance
+            WHERE {query_con}
+
+            """)
+            print(cursor.fetchall())
+            self.conn.commit()
+            self.clear_inputs()
+
+            self.table.itemSelectionChanged.connect(self.show_selected)
+
+        except Exception as e:
+            print(e)
+
 
 
 
