@@ -225,6 +225,7 @@ class Ui_LoginWindow(object):
         self.delete_btn = QtWidgets.QPushButton(self.login_window)
         self.delete_btn.setText("Delete")
         self.delete_btn.setGeometry(QtCore.QRect(850, 780, 100, 50))
+        self.delete_btn.clicked.connect(self.delete_btn_clicked)
         self.delete_btn.show()
 
         # Search Button
@@ -236,7 +237,7 @@ class Ui_LoginWindow(object):
 
 
     # getting the table dimension
-    def get_table(self, query = "SELECT * FROM tbl_maintenance"):
+    def get_table(self, query = "SELECT * FROM tbl_maintenance WHERE deleted = 'False'"):
         cursor.execute(query)
         result = cursor.fetchall()
         return result
@@ -281,7 +282,7 @@ class Ui_LoginWindow(object):
         if selected:
             items = [item.text() for item in selected]
             items = items[:self.columns]
-            self.row_values = {
+            self.clicked_values = {
                 "ctrl_num" : items[0],
                 "item_name": items[1],
                 "quantity": str(items[2]),
@@ -295,16 +296,16 @@ class Ui_LoginWindow(object):
 
             }
             # show the selected values in the UI
-            itemname = self.itemname_box.setText(self.row_values["item_name"])
-            quantity = self.quantity_box.setText(self.row_values["quantity"])
-            unit = self.unit_box.setText(self.row_values["unit"])
-            model = self.model_box.setText(self.row_values["model_name"])
-            remark = self.remarks_box.setText(self.row_values["remarks"])
+            itemname = self.itemname_box.setText(self.clicked_values["item_name"])
+            quantity = self.quantity_box.setText(self.clicked_values["quantity"])
+            unit = self.unit_box.setText(self.clicked_values["unit"])
+            model = self.model_box.setText(self.clicked_values["model_name"])
+            remark = self.remarks_box.setText(self.clicked_values["remarks"])
 
-            self.encoded_by.setText(f"Encoded By: {self.row_values['encoded_by']}")
-            self.encoded_date.setText(f"Date Encoded: {self.row_values['date_encoded']}")
-            self.updated_by.setText(f"Updated By: {self.row_values['updated_by']}")
-            self.updated_date.setText(f"Last Update: {self.row_values['last_updated']}")
+            self.encoded_by.setText(f"Encoded By: {self.clicked_values['encoded_by']}")
+            self.encoded_date.setText(f"Date Encoded: {self.clicked_values['date_encoded']}")
+            self.updated_by.setText(f"Updated By: {self.clicked_values['updated_by']}")
+            self.updated_date.setText(f"Last Update: {self.clicked_values['last_updated']}")
 
     def parse_inputs(self):
         self.user_inputs = {
@@ -343,7 +344,7 @@ class Ui_LoginWindow(object):
 
     def update_btn_clicked(self):
         try:
-            id = self.row_values["ctrl_num"]
+            id = self.clicked_values["ctrl_num"]
             self.parse_inputs()
             cursor.execute(f"""
                                         UPDATE tbl_maintenance
@@ -362,20 +363,18 @@ class Ui_LoginWindow(object):
         except Exception as e:
             print(e)
 
-
-
-
     def search_btn_clicked(self):
         try:
             self.parse_inputs()
-            #create a list of tuple condition query
+            # Create a list of tuple condition query
             querycon_list = []
             for i, j in self.user_inputs.items():
                 if j == "":
                     pass
                 else:
-                    querycon_list.append((i,j))
+                    querycon_list.append((i, j))
             print(querycon_list)
+
             query_con = ""
 
             for items in querycon_list:
@@ -388,12 +387,46 @@ class Ui_LoginWindow(object):
             cursor.execute(f"""
             SELECT * FROM tbl_maintenance
             WHERE {query_con}
-
             """)
-            print("result: "+ str(len(cursor.fetchall())))
+
+            # Fetch search results
+            search_results = cursor.fetchall()
+
+            # Clear table widget
+            self.table.clearContents()
+
+            # Update table with search results
+            self.rows = len(search_results)
+            self.columns = len(search_results[0])
+            self.table.setRowCount(self.rows)
+            self.table.setColumnCount(self.columns)
+            for i in range(self.rows):
+                for j in range(self.columns):
+                    item = QtWidgets.QTableWidgetItem(str(search_results[i][j]))
+                    self.table.setItem(i, j, item)
+
+            # Update selection behavior
+            self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+
+        except psycopg2.Error as e:
+            print(e)
+            self.conn.rollback()
+
+
+    #Delete single selected line
+    def delete_btn_clicked(self):
+
+        try:
+            self.parse_inputs()
+            cursor.execute(f"""
+            UPDATE tbl_maintenance
+            SET deleted = 'True'
+            WHERE control_num = '{self.clicked_values["ctrl_num"]}'
+            
+            """)
             self.conn.commit()
             self.clear_inputs()
-
+            self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
 
         except Exception as e:
