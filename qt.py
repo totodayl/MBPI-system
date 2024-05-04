@@ -3,6 +3,7 @@ import psycopg2
 import pandas as pd
 import datetime as dt
 
+
 class Ui_LoginWindow(object):
     def setupUi(self, LoginWindow):
         LoginWindow.setObjectName("LoginWindow")
@@ -26,8 +27,8 @@ class Ui_LoginWindow(object):
         self.login_btn = QtWidgets.QPushButton(self.login_window)
         self.login_btn.setGeometry(QtCore.QRect(360, 340, 75, 23))
         self.login_btn.setStyleSheet("\n"
-"color: rgb(0, 0, 0);\n"
-"background-color: rgb(255, 255, 255);")
+                                     "color: rgb(0, 0, 0);\n"
+                                     "background-color: rgb(255, 255, 255);")
         self.login_btn.setObjectName("Login")
         self.login_btn.clicked.connect(self.login)
         LoginWindow.setCentralWidget(self.login_window)
@@ -44,7 +45,6 @@ class Ui_LoginWindow(object):
 
         self.retranslateUi(LoginWindow)
         QtCore.QMetaObject.connectSlotsByName(LoginWindow)
-
 
     def retranslateUi(self, LoginWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -70,9 +70,7 @@ class Ui_LoginWindow(object):
         except Exception as e:
             print("Invalid Credentials:", e)
 
-
-
-    #This is the main window after login screen
+    # This is the main window after login screen
     def launch_main(self):
         # Delete widgets
         self.username.deleteLater()
@@ -80,13 +78,13 @@ class Ui_LoginWindow(object):
         self.login_btn.deleteLater()
 
         # Setting the size and position of the main window
-        LoginWindow.setFixedSize(1200, 900)  #fixed size
+        LoginWindow.setFixedSize(1200, 900)  # fixed size
         LoginWindow.move(360, 140)
 
-        #add the table to the Window
+        # add the table to the Window
         self.main_table()
-        self.table.itemSelectionChanged.connect(self.show_selected) #Selection updates
-        #Itemname textbox
+        self.table.itemSelectionChanged.connect(self.show_selected)  # Selection updates
+        # Itemname textbox
         self.itemname_box = QtWidgets.QLineEdit(self.login_window)
         self.itemname_box.setGeometry(QtCore.QRect(100, 620, 190, 30))
         self.itemname_box.setStyleSheet("background-color: white;")
@@ -94,7 +92,7 @@ class Ui_LoginWindow(object):
         self.itemname_box.setAutoFillBackground(False)
         self.itemname_box.show()
 
-        #Itemname Label
+        # Itemname Label
         self.itemname_label = QtWidgets.QLabel(self.login_window)
         self.itemname_label.setText("Item Name")
         self.itemname_label.setGeometry(QtCore.QRect(155, 650, 100, 30))
@@ -102,7 +100,7 @@ class Ui_LoginWindow(object):
         self.itemname_label.setFont(QtGui.QFont("Arial", 11))
         self.itemname_label.show()
 
-        #Quantity textbox
+        # Quantity textbox
         self.quantity_box = QtWidgets.QLineEdit(self.login_window)
         self.quantity_box.setGeometry(QtCore.QRect(340, 620, 70, 30))
         self.quantity_box.setStyleSheet("background-color: white;")
@@ -110,7 +108,7 @@ class Ui_LoginWindow(object):
         self.quantity_box.setAutoFillBackground(False)
         self.quantity_box.show()
 
-        #Quantity Label
+        # Quantity Label
         self.quantity_label = QtWidgets.QLabel(self.login_window)
         self.quantity_label.setText("Quantity")
         self.quantity_label.setGeometry(QtCore.QRect(345, 650, 70, 30))
@@ -118,7 +116,7 @@ class Ui_LoginWindow(object):
         self.quantity_label.setFont(QtGui.QFont("Arial", 11))
         self.quantity_label.show()
 
-        #Unit textbox
+        # Unit textbox
         self.unit_box = QtWidgets.QLineEdit(self.login_window)
         self.unit_box.setGeometry(QtCore.QRect(460, 620, 70, 30))
         self.unit_box.setStyleSheet("background-color: white;")
@@ -126,7 +124,7 @@ class Ui_LoginWindow(object):
         self.unit_box.setAutoFillBackground(False)
         self.unit_box.show()
 
-        #Unit Label
+        # Unit Label
         self.unit_label = QtWidgets.QLabel(self.login_window)
         self.unit_label.setText("Unit")
         self.unit_label.setGeometry(QtCore.QRect(480, 650, 70, 30))
@@ -134,7 +132,7 @@ class Ui_LoginWindow(object):
         self.unit_label.setFont(QtGui.QFont("Arial", 11))
         self.unit_label.show()
 
-        #model textbox
+        # model textbox
         self.model_box = QtWidgets.QLineEdit(self.login_window)
         self.model_box.setGeometry(QtCore.QRect(600, 620, 190, 30))
         self.model_box.setStyleSheet("background-color: white;")
@@ -142,7 +140,7 @@ class Ui_LoginWindow(object):
         self.model_box.setAutoFillBackground(False)
         self.model_box.show()
 
-        #model label
+        # model label
         self.model_label = QtWidgets.QLabel(self.login_window)
         self.model_label.setText("Model")
         self.model_label.setGeometry(QtCore.QRect(680, 650, 70, 30))
@@ -150,7 +148,7 @@ class Ui_LoginWindow(object):
         self.model_label.setFont(QtGui.QFont("Arial", 11))
         self.model_label.show()
 
-        #remarks textbox
+        # remarks textbox
         self.remarks_box = QtWidgets.QLineEdit(self.login_window)
         self.remarks_box.setGeometry(QtCore.QRect(850, 620, 190, 30))
         self.remarks_box.setStyleSheet("background-color: white;")
@@ -158,7 +156,7 @@ class Ui_LoginWindow(object):
         self.remarks_box.setAutoFillBackground(False)
         self.remarks_box.show()
 
-        #remarks label
+        # remarks label
         self.remarks_label = QtWidgets.QLabel(self.login_window)
         self.remarks_label.setText("Remarks")
         self.remarks_label.setGeometry(QtCore.QRect(920, 650, 70, 30))
@@ -166,9 +164,9 @@ class Ui_LoginWindow(object):
         self.remarks_label.setFont(QtGui.QFont("Arial", 11))
         self.remarks_label.show()
 
-        #This part below is for showing logs
+        # This part below is for showing logs
 
-        #Encoded By Label
+        # Encoded By Label
         self.encoded_by = QtWidgets.QLabel(self.login_window)
         self.encoded_by.setText("Encoded By: ")
         self.encoded_by.setGeometry(QtCore.QRect(100, 700, 400, 25))
@@ -177,7 +175,7 @@ class Ui_LoginWindow(object):
         self.encoded_by.setStyleSheet('color: red')
         self.encoded_by.show()
 
-        #Encoded Date Label
+        # Encoded Date Label
         self.encoded_date = QtWidgets.QLabel(self.login_window)
         self.encoded_date.setText("Date Encoded: ")
         self.encoded_date.setGeometry(QtCore.QRect(100, 723, 400, 25))
@@ -186,7 +184,7 @@ class Ui_LoginWindow(object):
         self.encoded_date.setStyleSheet('color: red')
         self.encoded_date.show()
 
-        #Updated By Label
+        # Updated By Label
         self.updated_by = QtWidgets.QLabel(self.login_window)
         self.updated_by.setText("Updated By: ")
         self.updated_by.setGeometry(QtCore.QRect(100, 746, 400, 25))
@@ -195,7 +193,7 @@ class Ui_LoginWindow(object):
         self.updated_by.setStyleSheet('color: red')
         self.updated_by.show()
 
-        #Date Updated Label
+        # Date Updated Label
         self.updated_date = QtWidgets.QLabel(self.login_window)
         self.updated_date.setText("Updated By: ")
         self.updated_date.setGeometry(QtCore.QRect(100, 769, 400, 25))
@@ -204,38 +202,33 @@ class Ui_LoginWindow(object):
         self.updated_date.setStyleSheet('color: red')
         self.updated_date.show()
 
-        #Added Buttons
+        # Added Buttons
 
-        #Insert Button
+        # Insert Button
         self.insert_btn = QtWidgets.QPushButton(self.login_window)
         self.insert_btn.setText("Add")
         self.insert_btn.setGeometry(QtCore.QRect(850, 700, 100, 50))
         self.insert_btn.clicked.connect(self.add_btn_clicked)
         self.insert_btn.show()
 
-        #Update Button
+        # Update Button
         self.update_btn = QtWidgets.QPushButton(self.login_window)
         self.update_btn.setText("Update")
         self.update_btn.setGeometry(QtCore.QRect(1000, 700, 100, 50))
+        self.update_btn.clicked.connect(self.update_btn_clicked)
         self.update_btn.show()
 
-        #Delete Button
+        # Delete Button
         self.delete_btn = QtWidgets.QPushButton(self.login_window)
         self.delete_btn.setText("Delete")
         self.delete_btn.setGeometry(QtCore.QRect(850, 780, 100, 50))
         self.delete_btn.show()
 
-        #Search Button
+        # Search Button
         self.search_btn = QtWidgets.QPushButton(self.login_window)
         self.search_btn.setText("Update")
         self.search_btn.setGeometry(QtCore.QRect(1000, 780, 100, 50))
         self.search_btn.show()
-
-
-
-
-
-
 
     # getting the table dimension
     def get_tablesize(self):
@@ -243,8 +236,7 @@ class Ui_LoginWindow(object):
         result = cursor.fetchall()
         return result
 
-
-    #create an excel like table object
+    # create an excel like table object
     def main_table(self):
 
         self.table = QtWidgets.QTableWidget(self.login_window)
@@ -257,7 +249,8 @@ class Ui_LoginWindow(object):
 
         # Fetch table data and column names
         query_result = self.get_tablesize()
-        cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_name = 'tbl_maintenance';") #query for getting the table names
+        cursor.execute(
+            "SELECT column_name FROM information_schema.columns WHERE table_name = 'tbl_maintenance';")  # query for getting the table names
         column_names = [col[0] for col in cursor.fetchall()]
 
         self.rows = len(query_result)
@@ -276,29 +269,29 @@ class Ui_LoginWindow(object):
         self.table.show()
         self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
-
     def show_selected(self):
         selected = self.table.selectedItems()
         if selected:
             items = [item.text() for item in selected]
             items = items[:self.columns]
             self.row_values = {
-                "item_name" : items[1],
-                "quantity" : str(items[2]),
-                "unit" : items[3],
-                "model" : items[4],
-                "remarks" : items[5],
-                "encoded_by" : items[7],
-                "date_encoded" : items[8],
-                "updated_by" : items[9],
-                "last_updated" : items[10]
+                "ctrl_num" : items[0],
+                "item_name": items[1],
+                "quantity": str(items[2]),
+                "unit": items[3],
+                "model": items[4],
+                "remarks": items[5],
+                "encoded_by": items[7],
+                "date_encoded": items[8],
+                "updated_by": items[9],
+                "last_updated": items[10]
 
             }
-            #show the selected values in the UI
+            # show the selected values in the UI
             itemname = self.itemname_box.setText(self.row_values["item_name"])
             quantity = self.quantity_box.setText(self.row_values["quantity"])
             unit = self.unit_box.setText(self.row_values["unit"])
-            model =self.model_box.setText(self.row_values["model"])
+            model = self.model_box.setText(self.row_values["model"])
             remark = self.remarks_box.setText(self.row_values["remarks"])
 
             self.encoded_date.setText(f"Updated By: {self.row_values['date_encoded']}")
@@ -306,15 +299,15 @@ class Ui_LoginWindow(object):
             self.updated_by.setText(f"Updated By: {self.row_values['updated_by']}")
             self.updated_date.setText(f"Updated By: {self.row_values['last_updated']}")
 
-
     def parse_inputs(self):
         self.user_inputs = {
-            "item_name" : self.itemname_box.text(),
-            "quantity" : self.quantity_box.text(),
-            "unit" : self.unit_box.text(),
-            "model" : self.model_box.text(),
-            "remarks" : self.remarks_box.text()
+            "item_name": self.itemname_box.text(),
+            "quantity": self.quantity_box.text(),
+            "unit": self.unit_box.text(),
+            "model": self.model_box.text(),
+            "remarks": self.remarks_box.text()
         }
+
     def clear_inputs(self):
         self.itemname_box.clear()
         self.remarks_box.clear()
@@ -322,8 +315,7 @@ class Ui_LoginWindow(object):
         self.quantity_box.clear()
         self.model_box.clear()
 
-
-    #Execute when add button is clicked
+    # Execute when add button is clicked
     def add_btn_clicked(self):
         try:
 
@@ -331,21 +323,43 @@ class Ui_LoginWindow(object):
             cursor.execute(f"""
             INSERT INTO tbl_maintenance(itemname, quantity, unit, model_name, remarks,encoded_by)
             VALUES('{self.user_inputs["item_name"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', '{self.user_inputs["model"]}', '{self.user_inputs["remarks"]}','admin')
-            
+
             """)
             self.conn.commit()
             self.clear_inputs()
             self.main_table()
+            self.table.itemSelectionChanged.connect(self.show_selected)
+
+        except Exception as e:
+            print(e)
+
+    def update_btn_clicked(self):
+        try:
+            id = self.row_values["ctrl_num"]
+            self.parse_inputs()
+            cursor.execute(f"""
+                    UPDATE tbl_maintenance
+                    SET itemname = '{self.user_inputs["item_name"]}',
+                    quantity = '{self.user_inputs['quantity']}', 
+                    unit = '{self.user_inputs['unit']}', 
+                    model_name = '{self.user_inputs['model']}', 
+                    remarks = '{self.user_inputs["remarks"]}',
+                    encoded_by = 'admin'
+                    WHERE control_num = {id}
+                    """)
+            self.conn.commit()
+            self.clear_inputs()
+            self.main_table()
+            self.table.itemSelectionChanged.connect(self.show_selected)
 
         except Exception as e:
             print(e)
 
 
 
-
-
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     LoginWindow = QtWidgets.QMainWindow()
     ui = Ui_LoginWindow()
