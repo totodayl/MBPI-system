@@ -252,6 +252,8 @@ class Ui_LoginWindow(object):
         self.table.setStyleSheet("background-color: white;")
         self.table.verticalHeader().setVisible(False)
 
+
+
         # Fetch table data and column names
         query_result = self.get_table()
         cursor.execute(
@@ -299,10 +301,10 @@ class Ui_LoginWindow(object):
             model = self.model_box.setText(self.row_values["model_name"])
             remark = self.remarks_box.setText(self.row_values["remarks"])
 
-            self.encoded_date.setText(f"Updated By: {self.row_values['date_encoded']}")
-            self.encoded_by.setText(f"Updated By: {self.row_values['encoded_by']}")
+            self.encoded_by.setText(f"Encoded By: {self.row_values['encoded_by']}")
+            self.encoded_date.setText(f"Date Encoded: {self.row_values['date_encoded']}")
             self.updated_by.setText(f"Updated By: {self.row_values['updated_by']}")
-            self.updated_date.setText(f"Updated By: {self.row_values['last_updated']}")
+            self.updated_date.setText(f"Last Update: {self.row_values['last_updated']}")
 
     def parse_inputs(self):
         self.user_inputs = {
@@ -388,7 +390,7 @@ class Ui_LoginWindow(object):
             WHERE {query_con}
 
             """)
-            print(cursor.fetchall())
+            print("result: "+ str(len(cursor.fetchall())))
             self.conn.commit()
             self.clear_inputs()
 
