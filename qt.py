@@ -284,7 +284,7 @@ class Ui_LoginWindow(object):
                 "item_name": items[1],
                 "quantity": str(items[2]),
                 "unit": items[3],
-                "model": items[4],
+                "model_name": items[4],
                 "remarks": items[5],
                 "encoded_by": items[7],
                 "date_encoded": items[8],
@@ -296,7 +296,7 @@ class Ui_LoginWindow(object):
             itemname = self.itemname_box.setText(self.row_values["item_name"])
             quantity = self.quantity_box.setText(self.row_values["quantity"])
             unit = self.unit_box.setText(self.row_values["unit"])
-            model = self.model_box.setText(self.row_values["model"])
+            model = self.model_box.setText(self.row_values["model_name"])
             remark = self.remarks_box.setText(self.row_values["remarks"])
 
             self.encoded_date.setText(f"Updated By: {self.row_values['date_encoded']}")
@@ -327,8 +327,8 @@ class Ui_LoginWindow(object):
             self.parse_inputs()
             cursor.execute(f"""
             INSERT INTO tbl_maintenance(itemname, quantity, unit, model_name, remarks,encoded_by)
-            VALUES('{self.user_inputs["item_name"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', 
-                   '{self.user_inputs["model"]}', '{self.user_inputs["remarks"]}','admin')
+            VALUES('{self.user_inputs["itemname"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', 
+                   '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}','admin')
 
             """)
             self.conn.commit()
@@ -344,22 +344,24 @@ class Ui_LoginWindow(object):
             id = self.row_values["ctrl_num"]
             self.parse_inputs()
             cursor.execute(f"""
-                    UPDATE tbl_maintenance
-                    SET itemname = '{self.user_inputs["item_name"]}',
-                    quantity = '{self.user_inputs['quantity']}', 
-                    unit = '{self.user_inputs['unit']}', 
-                    model_name = '{self.user_inputs['model']}', 
-                    remarks = '{self.user_inputs["remarks"]}',
-                    encoded_by = 'admin'
-                    WHERE control_num = {id}
-                    """)
+                                        UPDATE tbl_maintenance
+                                        SET itemname = '{self.user_inputs["itemname"]}',
+                                        quantity = '{self.user_inputs["quantity"]}', 
+                                        unit = '{self.user_inputs['unit']}', 
+                                        model_name = '{self.user_inputs['model_name']}', 
+                                        remarks = '{self.user_inputs["remarks"]}',
+                                        encoded_by = 'admin'
+                                        WHERE control_num = {id}
+                                        """)
             self.conn.commit()
             self.clear_inputs()
             self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
-
         except Exception as e:
             print(e)
+
+
+
 
     def search_btn_clicked(self):
         try:
