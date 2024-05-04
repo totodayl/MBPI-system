@@ -61,8 +61,8 @@ class Ui_LoginWindow(object):
                 host='localhost',
                 port=5432,
                 dbname="MBPI",
-                user=username,
-                password=pass1)
+                user="postgres",
+                password="mbpi")
             global cursor
             cursor = self.conn.cursor()
             print("Connected Successfully")
@@ -235,9 +235,20 @@ class Ui_LoginWindow(object):
         self.search_btn.clicked.connect(self.search_btn_clicked)
         self.search_btn.show()
 
+        #Date Label
+        self.date_label = QtWidgets.QLabel(self.login_window)
+        self.date_label.setGeometry(QtCore.QRect(1000, 10, 150, 20))
+        self.date_label.setStyleSheet("background-color: white")
+        self.date_label.show()
+
+        self.timer = QtCore.QTimer(self.login_window)
+        self.timer.timeout.connect(self.updateDateTime)
+        self.timer.start(1000)
+
+
 
     # getting the table dimension
-    def get_table(self, query = "SELECT * FROM tbl_maintenance WHERE deleted = 'False'"):
+    def get_table(self, query = "SELECT * FROM tbl_maintenance WHERE deleted = 'False' ORDER BY control_num DESC"):
         cursor.execute(query)
         result = cursor.fetchall()
         return result
@@ -273,7 +284,7 @@ class Ui_LoginWindow(object):
                 item = QtWidgets.QTableWidgetItem(str(query_result[i][j]))  # Convert to string
                 self.table.setItem(i, j, item)
 
-        self.table.setHorizontalHeaderLabels(column_names)
+        self.table.setHorizontalHeaderLabels([col.upper() for col in column_names]) #Set column names
         self.table.show()
         self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
@@ -422,7 +433,7 @@ class Ui_LoginWindow(object):
             UPDATE tbl_maintenance
             SET deleted = 'True'
             WHERE control_num = '{self.clicked_values["ctrl_num"]}'
-            
+        
             """)
             self.conn.commit()
             self.clear_inputs()
@@ -432,6 +443,10 @@ class Ui_LoginWindow(object):
         except Exception as e:
             print(e)
 
+    def updateDateTime(self):
+        currentDateTime = QtCore.QDateTime.currentDateTime()
+        formattedDateTime = currentDateTime.toString("yyyy-MM-dd hh:mm:ss")
+        self.date_label.setText(formattedDateTime)
 
 
 
