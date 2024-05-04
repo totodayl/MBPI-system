@@ -85,7 +85,7 @@ class Ui_LoginWindow(object):
         LoginWindow.move(360, 140)
 
         # add the table to the Window
-        self.main_table()
+        self.show_table()
         self.table.itemSelectionChanged.connect(self.show_selected)  # Selection updates
         # Itemname textbox
         self.itemname_box = QtWidgets.QLineEdit(self.login_window)
@@ -242,7 +242,7 @@ class Ui_LoginWindow(object):
         return result
 
     # create an excel like table object
-    def main_table(self):
+    def show_table(self):
 
         self.table = QtWidgets.QTableWidget(self.login_window)
 
@@ -333,7 +333,7 @@ class Ui_LoginWindow(object):
             """)
             self.conn.commit()
             self.clear_inputs()
-            self.main_table()
+            self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
 
         except Exception as e:
@@ -355,7 +355,7 @@ class Ui_LoginWindow(object):
                     """)
             self.conn.commit()
             self.clear_inputs()
-            self.main_table()
+            self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
 
         except Exception as e:
