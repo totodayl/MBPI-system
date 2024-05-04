@@ -309,7 +309,7 @@ class Ui_LoginWindow(object):
             "itemname": self.itemname_box.text(),
             "quantity": self.quantity_box.text(),
             "unit": self.unit_box.text(),
-            "model": self.model_box.text(),
+            "model_name": self.model_box.text(),
             "remarks": self.remarks_box.text()
         }
 
