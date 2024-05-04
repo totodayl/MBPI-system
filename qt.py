@@ -229,14 +229,15 @@ class Ui_LoginWindow(object):
 
         # Search Button
         self.search_btn = QtWidgets.QPushButton(self.login_window)
-        self.search_btn.setText("Update")
+        self.search_btn.setText("Search")
         self.search_btn.setGeometry(QtCore.QRect(1000, 780, 100, 50))
         self.search_btn.clicked.connect(self.search_btn_clicked)
         self.search_btn.show()
 
+
     # getting the table dimension
-    def get_tablesize(self):
-        cursor.execute("SELECT * FROM tbl_maintenance")
+    def get_table(self, query = "SELECT * FROM tbl_maintenance"):
+        cursor.execute(query)
         result = cursor.fetchall()
         return result
 
@@ -252,7 +253,7 @@ class Ui_LoginWindow(object):
         self.table.verticalHeader().setVisible(False)
 
         # Fetch table data and column names
-        query_result = self.get_tablesize()
+        query_result = self.get_table()
         cursor.execute(
             "SELECT column_name FROM information_schema.columns WHERE table_name = 'tbl_maintenance';")  # query for getting the table names
         column_names = [col[0] for col in cursor.fetchall()]
@@ -326,7 +327,8 @@ class Ui_LoginWindow(object):
             self.parse_inputs()
             cursor.execute(f"""
             INSERT INTO tbl_maintenance(itemname, quantity, unit, model_name, remarks,encoded_by)
-            VALUES('{self.user_inputs["item_name"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', '{self.user_inputs["model"]}', '{self.user_inputs["remarks"]}','admin')
+            VALUES('{self.user_inputs["item_name"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', 
+                   '{self.user_inputs["model"]}', '{self.user_inputs["remarks"]}','admin')
 
             """)
             self.conn.commit()
