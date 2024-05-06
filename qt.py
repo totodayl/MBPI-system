@@ -235,7 +235,7 @@ class Ui_LoginWindow(object):
         self.search_btn.clicked.connect(self.search_btn_clicked)
         self.search_btn.show()
 
-        #Date Label
+        # Date Label
         self.date_label = QtWidgets.QLabel(self.login_window)
         self.date_label.setGeometry(QtCore.QRect(1000, 10, 150, 20))
         self.date_label.setStyleSheet("background-color: white")
@@ -245,10 +245,8 @@ class Ui_LoginWindow(object):
         self.timer.timeout.connect(self.updateDateTime)
         self.timer.start(1000)
 
-
-
     # getting the table dimension
-    def get_table(self, query = "SELECT * FROM tbl_maintenance WHERE deleted = 'False' ORDER BY control_num DESC"):
+    def get_table(self, query="SELECT * FROM tbl_maintenance WHERE deleted = 'False' ORDER BY control_num DESC"):
         cursor.execute(query)
         result = cursor.fetchall()
         return result
@@ -263,8 +261,6 @@ class Ui_LoginWindow(object):
         self.table.setObjectName("table")
         self.table.setStyleSheet("background-color: white;")
         self.table.verticalHeader().setVisible(False)
-
-
 
         # Fetch table data and column names
         query_result = self.get_table()
@@ -284,7 +280,7 @@ class Ui_LoginWindow(object):
                 item = QtWidgets.QTableWidgetItem(str(query_result[i][j]))  # Convert to string
                 self.table.setItem(i, j, item)
 
-        self.table.setHorizontalHeaderLabels([col.upper() for col in column_names]) #Set column names
+        self.table.setHorizontalHeaderLabels([col.upper() for col in column_names])  # Set column names
         self.table.show()
         self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
@@ -294,7 +290,7 @@ class Ui_LoginWindow(object):
             items = [item.text() for item in selected]
             items = items[:self.columns]
             self.clicked_values = {
-                "ctrl_num" : items[0],
+                "ctrl_num": items[0],
                 "item_name": items[1],
                 "quantity": str(items[2]),
                 "unit": items[3],
@@ -406,25 +402,34 @@ class Ui_LoginWindow(object):
             # Clear table widget
             self.table.clearContents()
 
-            # Update table with search results
-            self.rows = len(search_results)
-            self.columns = len(search_results[0])
-            self.table.setRowCount(self.rows)
-            self.table.setColumnCount(self.columns)
-            for i in range(self.rows):
-                for j in range(self.columns):
-                    item = QtWidgets.QTableWidgetItem(str(search_results[i][j]))
-                    self.table.setItem(i, j, item)
+            if not search_results:
+                # If no results found, inform the user
+                QtWidgets.QMessageBox.information(self.login_window, "No Results",
+                                                  "No items found matching the search criteria.")
+                self.show_table()
+                self.table.itemSelectionChanged.connect(self.show_selected)
+            else:
+                # Update table with search results
+                self.rows = len(search_results)
+                self.columns = len(search_results[0])
+                self.table.setRowCount(self.rows)
+                self.table.setColumnCount(self.columns)
+                for i in range(self.rows):
+                    for j in range(self.columns):
+                        item = QtWidgets.QTableWidgetItem(str(search_results[i][j]))
+                        self.table.setItem(i, j, item)
 
-            # Update selection behavior
-            self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+                # Update selection behavior
+                self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
-        except psycopg2.Error as e:
-            print(e)
+
+        except psycopg2.Error:
+
+            # Handle the error, e.g., inform the user or log the error
+            QtWidgets.QMessageBox.critical(self.login_window, "No Results", f"No items found matching the search criteria.")
             self.conn.rollback()
 
-
-    #Delete single selected line
+    # Delete single selected line
     def delete_btn_clicked(self):
 
         try:
@@ -433,7 +438,7 @@ class Ui_LoginWindow(object):
             UPDATE tbl_maintenance
             SET deleted = 'True'
             WHERE control_num = '{self.clicked_values["ctrl_num"]}'
-        
+
             """)
             self.conn.commit()
             self.clear_inputs()
@@ -447,7 +452,6 @@ class Ui_LoginWindow(object):
         currentDateTime = QtCore.QDateTime.currentDateTime()
         formattedDateTime = currentDateTime.toString("yyyy-MM-dd hh:mm:ss")
         self.date_label.setText(formattedDateTime)
-
 
 
 if __name__ == "__main__":
