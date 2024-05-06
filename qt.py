@@ -235,6 +235,13 @@ class Ui_LoginWindow(object):
         self.search_btn.clicked.connect(self.search_btn_clicked)
         self.search_btn.show()
 
+        #Clear Button
+        self.clear_btn = QtWidgets.QPushButton(self.login_window)
+        self.clear_btn.setText("Clear")
+        self.clear_btn.setGeometry(QtCore.QRect(700, 780, 100, 50))
+        self.clear_btn.clicked.connect(self.clear_inputs)
+        self.clear_btn.show()
+
         # Date Label
         self.date_label = QtWidgets.QLabel(self.login_window)
         self.date_label.setGeometry(QtCore.QRect(1000, 10, 150, 20))
@@ -315,13 +322,16 @@ class Ui_LoginWindow(object):
             self.updated_date.setText(f"Last Update: {self.clicked_values['last_updated']}")
 
     def parse_inputs(self):
+
+        #Set to None as default if no inputs found
         self.user_inputs = {
-            "itemname": self.itemname_box.text(),
-            "quantity": self.quantity_box.text(),
-            "unit": self.unit_box.text(),
-            "model_name": self.model_box.text(),
-            "remarks": self.remarks_box.text()
+            "itemname": self.itemname_box.text() if self.itemname_box.text() else None,
+            "quantity": self.quantity_box.text() if self.quantity_box.text() else None,
+            "unit": self.unit_box.text() if self.unit_box.text() else None,
+            "model_name": self.model_box.text() if self.model_box.text() else None,
+            "remarks": self.remarks_box.text() if self.remarks_box.text() else None
         }
+
 
     def clear_inputs(self):
         self.itemname_box.clear()
@@ -346,8 +356,13 @@ class Ui_LoginWindow(object):
             self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
 
-        except Exception as e:
-            print(e)
+        except psycopg2.Error:
+            QtWidgets.QMessageBox.critical(self.login_window, "Invalid Entry",
+                                           f"Missing some inputs")
+            self.conn.rollback()
+            self.clear_inputs()
+            self.show_table()
+            self.table.itemSelectionChanged.connect(self.show_selected)
 
     def update_btn_clicked(self):
         try:
