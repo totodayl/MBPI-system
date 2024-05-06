@@ -264,7 +264,7 @@ class Ui_LoginWindow(object):
         self.table = QtWidgets.QTableWidget(self.login_window)
 
         # Set table size
-        self.table.setGeometry(QtCore.QRect(100, 50, 1000, 550))
+        self.table.setGeometry(QtCore.QRect(100, 50, 1000, 450))
         self.table.setObjectName("table")
         self.table.setStyleSheet("background-color: white;")
         self.table.verticalHeader().setVisible(False)
@@ -339,6 +339,7 @@ class Ui_LoginWindow(object):
         self.unit_box.clear()
         self.quantity_box.clear()
         self.model_box.clear()
+        self.table.clearSelection()
 
     # Execute when add button is clicked
     def add_btn_clicked(self):
@@ -346,9 +347,9 @@ class Ui_LoginWindow(object):
 
             self.parse_inputs()
             cursor.execute(f"""
-            INSERT INTO tbl_maintenance(itemname, quantity, unit, model_name, remarks,encoded_by)
+            INSERT INTO tbl_maintenance(itemname, quantity, unit, model_name, remarks,encoded_by, encoded_date)
             VALUES('{self.user_inputs["itemname"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', 
-                   '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}','admin')
+                   '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}','admin', '{dt.datetime.now()}')
 
             """)
             self.conn.commit()
@@ -356,7 +357,8 @@ class Ui_LoginWindow(object):
             self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
 
-        except psycopg2.Error:
+        except psycopg2.Error as e:
+            print(e)
             QtWidgets.QMessageBox.critical(self.login_window, "Invalid Entry",
                                            f"Missing some inputs")
             self.conn.rollback()
@@ -368,22 +370,39 @@ class Ui_LoginWindow(object):
         try:
             id = self.clicked_values["ctrl_num"]
             self.parse_inputs()
-            cursor.execute(f"""
-                                        UPDATE tbl_maintenance
-                                        SET itemname = '{self.user_inputs["itemname"]}',
-                                        quantity = '{self.user_inputs["quantity"]}', 
-                                        unit = '{self.user_inputs['unit']}', 
-                                        model_name = '{self.user_inputs['model_name']}', 
-                                        remarks = '{self.user_inputs["remarks"]}',
-                                        encoded_by = 'admin'
-                                        WHERE control_num = {id}
-                                        """)
-            self.conn.commit()
+            if self.user_inputs["itemname"] == None or self.user_inputs["quantity"] == None or self.user_inputs["model_name"] == None:
+                QtWidgets.QMessageBox.critical(self.login_window, "Cannot be Null" ,"Item Name, Quantity and Model Name cannot be empty")
+
+            else:
+                try:
+                    int(self.user_inputs["quantity"])
+                    cursor.execute(f"""
+                                                                            UPDATE tbl_maintenance
+                                                                            SET itemname = '{self.user_inputs["itemname"]}',
+                                                                            quantity = '{self.user_inputs["quantity"]}', 
+                                                                            unit = '{self.user_inputs['unit']}', 
+                                                                            model_name = '{self.user_inputs['model_name']}', 
+                                                                            remarks = '{self.user_inputs["remarks"]}',
+                                                                            encoded_by = 'admin'
+                                                                            WHERE control_num = {id}
+                                                                            """)
+                    self.conn.commit()
+                    self.clear_inputs()
+                    self.show_table()
+                    self.table.itemSelectionChanged.connect(self.show_selected)
+                except:
+                    QtWidgets.QMessageBox.critical(self.login_window, "Invalid Data", "Quantity only accepts Integer")
+
+
+
+
+        except Exception as e:
+            print(e)
+            self.conn.rollback()
             self.clear_inputs()
             self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
-        except Exception as e:
-            print(e)
+
 
     def search_btn_clicked(self):
         try:
@@ -438,11 +457,13 @@ class Ui_LoginWindow(object):
                 self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
 
-        except psycopg2.Error:
+        except Exception as e:
 
             # Handle the error, e.g., inform the user or log the error
+            print(e)
             QtWidgets.QMessageBox.critical(self.login_window, "No Results", f"No items found matching the search criteria.")
             self.conn.rollback()
+            self.show_table()
 
     # Delete single selected line
     def delete_btn_clicked(self):
@@ -464,9 +485,9 @@ class Ui_LoginWindow(object):
             print(e)
 
     def updateDateTime(self):
-        currentDateTime = QtCore.QDateTime.currentDateTime()
-        formattedDateTime = currentDateTime.toString("yyyy-MM-dd hh:mm:ss")
-        self.date_label.setText(formattedDateTime)
+        self.currentDateTime = QtCore.QDateTime.currentDateTime()
+        self.formattedDateTime = self.currentDateTime.toString("yyyy-MM-dd hh:mm:ss")
+        self.date_label.setText(self.formattedDateTime)
 
 
 if __name__ == "__main__":
