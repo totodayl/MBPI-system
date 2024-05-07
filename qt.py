@@ -58,7 +58,7 @@ class Ui_LoginWindow(object):
 
         try:
             self.conn = psycopg2.connect(
-                host='localhost',
+                host='192.168.1.13',
                 port=5432,
                 dbname="MBPI",
                 user="postgres",
@@ -82,14 +82,14 @@ class Ui_LoginWindow(object):
 
         # Setting the size and position of the main window
         LoginWindow.setFixedSize(1200, 900)  # fixed size
-        LoginWindow.move(360, 140)
+        LoginWindow.move(360, 100)
 
         # add the table to the Window
         self.show_table()
         self.table.itemSelectionChanged.connect(self.show_selected)  # Selection updates
         # Itemname textbox
         self.itemname_box = QtWidgets.QLineEdit(self.login_window)
-        self.itemname_box.setGeometry(QtCore.QRect(100, 620, 190, 30))
+        self.itemname_box.setGeometry(QtCore.QRect(100, 520, 190, 30))
         self.itemname_box.setStyleSheet("background-color: white;")
         self.itemname_box.setFont(QtGui.QFont("Arial", 11))
         self.itemname_box.setAutoFillBackground(False)
@@ -98,14 +98,14 @@ class Ui_LoginWindow(object):
         # Itemname Label
         self.itemname_label = QtWidgets.QLabel(self.login_window)
         self.itemname_label.setText("Item Name")
-        self.itemname_label.setGeometry(QtCore.QRect(155, 650, 100, 30))
+        self.itemname_label.setGeometry(QtCore.QRect(155, 550, 100, 30))
         self.itemname_label.setAutoFillBackground(False)
         self.itemname_label.setFont(QtGui.QFont("Arial", 11))
         self.itemname_label.show()
 
         # Quantity textbox
         self.quantity_box = QtWidgets.QLineEdit(self.login_window)
-        self.quantity_box.setGeometry(QtCore.QRect(340, 620, 70, 30))
+        self.quantity_box.setGeometry(QtCore.QRect(340, 520, 70, 30))
         self.quantity_box.setStyleSheet("background-color: white;")
         self.quantity_box.setFont(QtGui.QFont("Arial", 11))
         self.quantity_box.setAutoFillBackground(False)
@@ -114,14 +114,14 @@ class Ui_LoginWindow(object):
         # Quantity Label
         self.quantity_label = QtWidgets.QLabel(self.login_window)
         self.quantity_label.setText("Quantity")
-        self.quantity_label.setGeometry(QtCore.QRect(345, 650, 70, 30))
+        self.quantity_label.setGeometry(QtCore.QRect(345, 550, 70, 30))
         self.quantity_label.setAutoFillBackground(False)
         self.quantity_label.setFont(QtGui.QFont("Arial", 11))
         self.quantity_label.show()
 
         # Unit textbox
         self.unit_box = QtWidgets.QLineEdit(self.login_window)
-        self.unit_box.setGeometry(QtCore.QRect(460, 620, 70, 30))
+        self.unit_box.setGeometry(QtCore.QRect(460, 520, 70, 30))
         self.unit_box.setStyleSheet("background-color: white;")
         self.unit_box.setFont(QtGui.QFont("Arial", 11))
         self.unit_box.setAutoFillBackground(False)
@@ -130,14 +130,14 @@ class Ui_LoginWindow(object):
         # Unit Label
         self.unit_label = QtWidgets.QLabel(self.login_window)
         self.unit_label.setText("Unit")
-        self.unit_label.setGeometry(QtCore.QRect(480, 650, 70, 30))
+        self.unit_label.setGeometry(QtCore.QRect(480, 550, 70, 30))
         self.unit_label.setAutoFillBackground(False)
         self.unit_label.setFont(QtGui.QFont("Arial", 11))
         self.unit_label.show()
 
         # model textbox
         self.model_box = QtWidgets.QLineEdit(self.login_window)
-        self.model_box.setGeometry(QtCore.QRect(600, 620, 190, 30))
+        self.model_box.setGeometry(QtCore.QRect(600, 520, 190, 30))
         self.model_box.setStyleSheet("background-color: white;")
         self.model_box.setFont(QtGui.QFont("Arial", 10))
         self.model_box.setAutoFillBackground(False)
@@ -146,14 +146,14 @@ class Ui_LoginWindow(object):
         # model label
         self.model_label = QtWidgets.QLabel(self.login_window)
         self.model_label.setText("Model")
-        self.model_label.setGeometry(QtCore.QRect(680, 650, 70, 30))
+        self.model_label.setGeometry(QtCore.QRect(680, 550, 70, 30))
         self.model_label.setAutoFillBackground(False)
         self.model_label.setFont(QtGui.QFont("Arial", 11))
         self.model_label.show()
 
         # remarks textbox
         self.remarks_box = QtWidgets.QLineEdit(self.login_window)
-        self.remarks_box.setGeometry(QtCore.QRect(850, 620, 190, 30))
+        self.remarks_box.setGeometry(QtCore.QRect(850, 520, 190, 30))
         self.remarks_box.setStyleSheet("background-color: white;")
         self.remarks_box.setFont(QtGui.QFont("Arial", 10))
         self.remarks_box.setAutoFillBackground(False)
@@ -162,7 +162,7 @@ class Ui_LoginWindow(object):
         # remarks label
         self.remarks_label = QtWidgets.QLabel(self.login_window)
         self.remarks_label.setText("Remarks")
-        self.remarks_label.setGeometry(QtCore.QRect(920, 650, 70, 30))
+        self.remarks_label.setGeometry(QtCore.QRect(920, 550, 70, 30))
         self.remarks_label.setAutoFillBackground(False)
         self.remarks_label.setFont(QtGui.QFont("Arial", 11))
         self.remarks_label.show()
@@ -235,7 +235,7 @@ class Ui_LoginWindow(object):
         self.search_btn.clicked.connect(self.search_btn_clicked)
         self.search_btn.show()
 
-        #Clear Button
+        # Clear Button
         self.clear_btn = QtWidgets.QPushButton(self.login_window)
         self.clear_btn.setText("Clear")
         self.clear_btn.setGeometry(QtCore.QRect(700, 780, 100, 50))
@@ -323,15 +323,14 @@ class Ui_LoginWindow(object):
 
     def parse_inputs(self):
 
-        #Set to None as default if no inputs found
+        # Set to None as default if no inputs found
         self.user_inputs = {
-            "itemname": self.itemname_box.text() if self.itemname_box.text() else None,
-            "quantity": self.quantity_box.text() if self.quantity_box.text() else None,
-            "unit": self.unit_box.text() if self.unit_box.text() else None,
-            "model_name": self.model_box.text() if self.model_box.text() else None,
-            "remarks": self.remarks_box.text() if self.remarks_box.text() else None
+            "itemname": self.itemname_box.text(),
+            "quantity": self.quantity_box.text(),
+            "unit": self.unit_box.text(),
+            "model_name": self.model_box.text(),
+            "remarks": self.remarks_box.text()
         }
-
 
     def clear_inputs(self):
         self.itemname_box.clear()
@@ -340,6 +339,8 @@ class Ui_LoginWindow(object):
         self.quantity_box.clear()
         self.model_box.clear()
         self.table.clearSelection()
+        self.show_table()
+        self.table.itemSelectionChanged.connect(self.show_selected)
 
     # Execute when add button is clicked
     def add_btn_clicked(self):
@@ -370,8 +371,10 @@ class Ui_LoginWindow(object):
         try:
             id = self.clicked_values["ctrl_num"]
             self.parse_inputs()
-            if self.user_inputs["itemname"] == None or self.user_inputs["quantity"] == None or self.user_inputs["model_name"] == None:
-                QtWidgets.QMessageBox.critical(self.login_window, "Cannot be Null" ,"Item Name, Quantity and Model Name cannot be empty")
+            if self.user_inputs["itemname"] == None or self.user_inputs["quantity"] == None or self.user_inputs[
+                "model_name"] == None:
+                QtWidgets.QMessageBox.critical(self.login_window, "Cannot be Null",
+                                               "Item Name, Quantity and Model Name cannot be empty")
 
             else:
                 try:
@@ -379,10 +382,10 @@ class Ui_LoginWindow(object):
                     cursor.execute(f"""
                                                                             UPDATE tbl_maintenance
                                                                             SET itemname = '{self.user_inputs["itemname"]}',
-                                                                            quantity = '{self.user_inputs["quantity"]}', 
-                                                                            unit = '{self.user_inputs['unit']}', 
-                                                                            model_name = '{self.user_inputs['model_name']}', 
-                                                                            remarks = '{self.user_inputs["remarks"]}',
+                                                                            quantity = '{"NULL" if self.user_inputs["quantity"] == "" else self.user_inputs["quantity"]}', 
+                                                                            unit = '{"NULL" if self.user_inputs["unit"] == "" else self.user_inputs["unit"]}', 
+                                                                            model_name = '{"NULL" if self.user_inputs["model_name"] == "" else self.user_inputs["model_name"]}', 
+                                                                            remarks = '{"NULL" if self.user_inputs["remarks"] == "" else self.user_inputs["remarks"]}',
                                                                             encoded_by = 'admin'
                                                                             WHERE control_num = {id}
                                                                             """)
@@ -393,16 +396,12 @@ class Ui_LoginWindow(object):
                 except:
                     QtWidgets.QMessageBox.critical(self.login_window, "Invalid Data", "Quantity only accepts Integer")
 
-
-
-
         except Exception as e:
             print(e)
             self.conn.rollback()
             self.clear_inputs()
             self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
-
 
     def search_btn_clicked(self):
         try:
@@ -419,10 +418,21 @@ class Ui_LoginWindow(object):
             query_con = ""
 
             for items in querycon_list:
-                if items != querycon_list[-1]:
-                    query_con = query_con + items[0] + " = " + "'" + items[1] + "'" + " AND "
+                if len(querycon_list) > 1:
+                    if items[0] == "itemname" or items != querycon_list[-1]:
+                        query_con = (query_con + items[0] + " ILIKE" + " '%" + items[1] + "%'" +
+                                     " AND ")
+                    elif items == querycon_list[-1]:
+                        query_con = query_con + items[0] + " = " + "'" + items[1] + "'"
+                    else:
+                        query_con = query_con + items[0] + " = " + "'" + items[1] + "'" + " AND "
+
                 else:
-                    query_con = query_con + items[0] + " = " + "'" + items[1] + "'"
+                    if items[0] == "itemname":
+                        query_con = (query_con + items[0] + " ILIKE" + " '%" + items[1] + "%'")
+                    else:
+                        query_con = query_con + items[0] + " = " + "'" + items[1] + "'"
+
             print(query_con)
 
             cursor.execute(f"""
@@ -461,7 +471,8 @@ class Ui_LoginWindow(object):
 
             # Handle the error, e.g., inform the user or log the error
             print(e)
-            QtWidgets.QMessageBox.critical(self.login_window, "No Results", f"No items found matching the search criteria.")
+            QtWidgets.QMessageBox.critical(self.login_window, "No Results",
+                                           f"No items found matching the search criteria.")
             self.conn.rollback()
             self.show_table()
 
