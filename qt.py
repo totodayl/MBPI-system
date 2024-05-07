@@ -9,18 +9,18 @@ class Ui_LoginWindow(object):
         LoginWindow.setObjectName("LoginWindow")
         LoginWindow.resize(800, 600)
         self.login_window = QtWidgets.QWidget(LoginWindow)
-        self.login_window.setStyleSheet("background-color: rgb(165, 200, 255);")
+        self.login_window.setStyleSheet("background-color : qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(176, 0, 0, 255), stop:0.738636 rgba(255, 113, 250, 255))")
         self.login_window.setObjectName("MainWindow")
         self.username = QtWidgets.QLineEdit(self.login_window)
         self.username.setGeometry(QtCore.QRect(310, 140, 171, 31))
         self.username.setAutoFillBackground(False)
-        self.username.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.username.setStyleSheet("background-color: rgb(255, 255, 255); border-radius: 5px")
         self.username.setObjectName("username")
         self.username.setText("postgres")
         self.password = QtWidgets.QLineEdit(self.login_window)
         self.password.setGeometry(QtCore.QRect(310, 230, 171, 31))
         self.password.setAutoFillBackground(False)
-        self.password.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.password.setStyleSheet("background-color: rgb(255, 255, 255); border-radius: 5px")
         self.password.setObjectName("password")
         self.password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.password.setText("mbpi")
@@ -28,7 +28,8 @@ class Ui_LoginWindow(object):
         self.login_btn.setGeometry(QtCore.QRect(360, 340, 75, 23))
         self.login_btn.setStyleSheet("\n"
                                      "color: rgb(0, 0, 0);\n"
-                                     "background-color: rgb(255, 255, 255);")
+                                     "background-color: rgb(255, 255, 255); \n"
+                                     "border-radius: 10px;")
         self.login_btn.setObjectName("Login")
         self.login_btn.clicked.connect(self.login)
         LoginWindow.setCentralWidget(self.login_window)
@@ -79,7 +80,7 @@ class Ui_LoginWindow(object):
             self.login_btn.deleteLater()
         except:
             pass
-
+        self.login_window.setStyleSheet("background-color: rgb(165, 200, 255)")
         # Setting the size and position of the main window
         LoginWindow.setFixedSize(1200, 900)  # fixed size
         LoginWindow.move(360, 100)
@@ -273,8 +274,8 @@ class Ui_LoginWindow(object):
         query_result = self.get_table()
         cursor.execute(
             "SELECT column_name FROM information_schema.columns WHERE table_name = 'tbl_maintenance';")  # query for getting the table names
-        column_names = [col[0] for col in cursor.fetchall()]
-
+        column_names = ['control_num', 'itemname', 'quantity', 'unit', 'model_name', 'remarks', 'encoded_by', 'date_encoded', 'updated_by', 'last_updated']
+        print(column_names)
         self.rows = len(query_result)
         self.columns = len(query_result[0])
 
@@ -348,7 +349,7 @@ class Ui_LoginWindow(object):
 
             self.parse_inputs()
             cursor.execute(f"""
-            INSERT INTO tbl_maintenance(itemname, quantity, unit, model_name, remarks,encoded_by, encoded_date)
+            INSERT INTO tbl_maintenance(itemname, quantity, unit, model_name, remarks,encoded_by, date_encoded)
             VALUES('{self.user_inputs["itemname"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', 
                    '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}','admin', '{dt.datetime.now()}')
 
@@ -357,6 +358,7 @@ class Ui_LoginWindow(object):
             self.clear_inputs()
             self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
+            self.itemname_box.setFocus()
 
         except psycopg2.Error as e:
             print(e)
