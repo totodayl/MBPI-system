@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 import psycopg2
 import pandas as pd
 import datetime as dt
@@ -253,6 +254,17 @@ class Ui_LoginWindow(object):
         self.timer.timeout.connect(self.updateDateTime)
         self.timer.start(1000)
 
+        self.icon_label = QtWidgets.QLabel(self.login_window)
+        self.icon_label.setGeometry(50, 50, 64, 64)  # Set size and position
+        self.icon_label.setPixmap(QtGui.QIcon('add.png').pixmap(64, 64))  # Set icon
+        self.icon_label.setScaledContents(True)  # Scale icon to fit the label
+        self.icon_label.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+
+        # Connect the clicked signal of the QLabel to the on_icon_clicked slot
+        self.icon_label.clicked.connect(self.add_btn_clicked)
+
+
+
     # getting the table dimension
     def get_table(self, query="SELECT * FROM tbl_maintenance WHERE deleted = 'False' ORDER BY control_num DESC"):
         cursor.execute(query)
@@ -274,10 +286,11 @@ class Ui_LoginWindow(object):
         query_result = self.get_table()
         cursor.execute(
             "SELECT column_name FROM information_schema.columns WHERE table_name = 'tbl_maintenance';")  # query for getting the table names
-        column_names = ['control_num', 'itemname', 'quantity', 'unit', 'model_name', 'remarks', 'encoded_by', 'date_encoded', 'updated_by', 'last_updated']
+        column_names = ['control_num', 'itemname', 'quantity', 'unit', 'model_name', 'remarks', "deleted", 'encoded_by', 'date_encoded', 'updated_by', 'last_updated']
         print(column_names)
         self.rows = len(query_result)
         self.columns = len(query_result[0])
+
 
         self.table.setColumnCount(self.columns)  # Set number of columns
         self.table.setRowCount(self.rows)  # Set number of rows
