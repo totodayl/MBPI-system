@@ -215,42 +215,6 @@ class Ui_LoginWindow(object):
         self.updated_date.setStyleSheet('color: red')
         self.updated_date.show()
 
-        # Added Buttons
-
-        # Insert Button
-        self.insert_btn = QtWidgets.QPushButton(self.login_window)
-        self.insert_btn.setText("Add")
-        self.insert_btn.setGeometry(QtCore.QRect(850, 700, 100, 50))
-        self.insert_btn.clicked.connect(self.add_btn_clicked)
-        self.insert_btn.show()
-
-        # Update Button
-        self.update_btn = QtWidgets.QPushButton(self.login_window)
-        self.update_btn.setText("Update")
-        self.update_btn.setGeometry(QtCore.QRect(1000, 700, 100, 50))
-        self.update_btn.clicked.connect(self.update_btn_clicked)
-        self.update_btn.show()
-
-        # Delete Button
-        self.delete_btn = QtWidgets.QPushButton(self.login_window)
-        self.delete_btn.setText("Delete")
-        self.delete_btn.setGeometry(QtCore.QRect(850, 780, 100, 50))
-        self.delete_btn.clicked.connect(self.delete_btn_clicked)
-        self.delete_btn.show()
-
-        # Search Button
-        self.search_btn = QtWidgets.QPushButton(self.login_window)
-        self.search_btn.setText("Search")
-        self.search_btn.setGeometry(QtCore.QRect(1000, 780, 100, 50))
-        self.search_btn.clicked.connect(self.search_btn_clicked)
-        self.search_btn.show()
-
-        # Clear Button
-        self.clear_btn = QtWidgets.QPushButton(self.login_window)
-        self.clear_btn.setText("Clear")
-        self.clear_btn.setGeometry(QtCore.QRect(700, 780, 100, 50))
-        self.clear_btn.clicked.connect(self.clear_inputs)
-        self.clear_btn.show()
 
         # Date Label
         self.date_label = QtWidgets.QLabel(self.login_window)
@@ -276,7 +240,7 @@ class Ui_LoginWindow(object):
 
         self.update_btn_icon = ClickableLabel(self.login_window)
         self.update_btn_icon.setGeometry(1125, 175, 50, 50)  # Set size and position
-        self.update_btn_icon.setPixmap(QtGui.QIcon('add.png').pixmap(50, 50))  # Set icon
+        self.update_btn_icon.setPixmap(QtGui.QIcon('update.png').pixmap(50, 50))  # Set icon
         self.update_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.update_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
 
@@ -286,7 +250,7 @@ class Ui_LoginWindow(object):
 
         self.filter_btn_icon = ClickableLabel(self.login_window)
         self.filter_btn_icon.setGeometry(1125, 250, 50, 50)  # Set size and position
-        self.filter_btn_icon.setPixmap(QtGui.QIcon('add.png').pixmap(50, 50))  # Set icon
+        self.filter_btn_icon.setPixmap(QtGui.QIcon('filter.png').pixmap(50, 50))  # Set icon
         self.filter_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.filter_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
 
@@ -296,19 +260,13 @@ class Ui_LoginWindow(object):
 
         self.delete_btn_icon = ClickableLabel(self.login_window)
         self.delete_btn_icon.setGeometry(1125, 325, 50, 50)  # Set size and position
-        self.delete_btn_icon.setPixmap(QtGui.QIcon('add.png').pixmap(50, 50))  # Set icon
+        self.delete_btn_icon.setPixmap(QtGui.QIcon('delete2.png').pixmap(50, 50))  # Set icon
         self.delete_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.delete_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
         self.delete_btn_icon.clicked.connect(self.add_btn_clicked)
         self.delete_btn_icon.show()
-
-
-
-
-
-
 
 
 
@@ -406,29 +364,129 @@ class Ui_LoginWindow(object):
 
     # Execute when add button is clicked
     def add_btn_clicked(self):
-        try:
 
-            self.parse_inputs()
-            cursor.execute(f"""
-            INSERT INTO tbl_maintenance(itemname, quantity, unit, model_name, remarks,encoded_by, date_encoded)
-            VALUES('{self.user_inputs["itemname"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', 
-                   '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}','admin', '{dt.datetime.now()}')
 
-            """)
-            self.conn.commit()
-            self.clear_inputs()
+        def click():
+            try:
+                self.parse_inputs()
+                cursor.execute(f"""
+                            INSERT INTO tbl_maintenance (itemname, quantity, unit, model_name, remarks)
+                            VALUES ('{self.user_inputs["itemname"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}')
+
+                            """)
+                self.conn.commit()
+                self.add_window.close()
+                self.clear_inputs()
+                self.show_table()
+                self.table.itemSelectionChanged.connect(self.show_selected)
+
+            except psycopg2.Error as e:
+                print(e)
+        def cancel():
+            self.add_window.close()
             self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
-            self.itemname_box.setFocus()
 
-        except psycopg2.Error as e:
-            print(e)
-            QtWidgets.QMessageBox.critical(self.login_window, "Invalid Entry",
-                                           f"Missing some inputs")
-            self.conn.rollback()
-            self.clear_inputs()
-            self.show_table()
-            self.table.itemSelectionChanged.connect(self.show_selected)
+
+        lbl_font = QtGui.QFont("Arial", 11)
+        lbl_font.setBold(True)
+
+        self.add_window = QtWidgets.QWidget()
+        self.add_window.setWindowTitle("ADD Data")
+        self.add_window.setStyleSheet("background-color : rgba(30,131,177,255)")
+        self.add_window.setGeometry(750, 420, 500, 400)
+        self.add_window.setFixedSize(450,500)
+
+        #Itemname Box
+        self.itemname_box = QtWidgets.QLineEdit(self.add_window)
+        self.itemname_box.setGeometry(60, 130, 330, 30)
+        self.itemname_box.setFont(QtGui.QFont("Arial", 11))
+        self.itemname_box.setStyleSheet("background-color: white; border-radius: 10px;")
+        self.itemname_box.setAlignment(Qt.AlignCenter)
+
+        #Itemname Label
+        self.itemname_label = QtWidgets.QLabel(self.add_window)
+        self.itemname_label.setGeometry(65, 168, 100, 18)
+        self.itemname_label.setStyleSheet("color: black")
+        self.itemname_label.setFont(lbl_font)
+        self.itemname_label.setText("Itemname")
+
+        #Quantity Box
+        self.quantity_box = QtWidgets.QLineEdit(self.add_window)
+        self.quantity_box.setGeometry(60, 190, 100, 30)
+        self.quantity_box.setFont(QtGui.QFont("Arial", 11))
+        self.quantity_box.setStyleSheet("background-color: white; border-radius: 10px;")
+        self.quantity_box.setAlignment(Qt.AlignCenter)
+
+        #Quantity Label
+        self.itemname_label = QtWidgets.QLabel(self.add_window)
+        self.itemname_label.setGeometry(65, 223, 100, 18)
+        self.itemname_label.setStyleSheet("color: black")
+        self.itemname_label.setFont(lbl_font)
+        self.itemname_label.setText("Quantity")
+
+        #Unit Box
+        self.unit_box = QtWidgets.QLineEdit(self.add_window)
+        self.unit_box.setGeometry(290, 190, 100, 30)
+        self.unit_box.setFont(lbl_font)
+        self.unit_box.setStyleSheet("background-color: white; border-radius: 10px;")
+        self.unit_box.setAlignment(Qt.AlignCenter)
+
+        #Unit Label
+        self.itemname_label = QtWidgets.QLabel(self.add_window)
+        self.itemname_label.setGeometry(320, 223, 100, 18)
+        self.itemname_label.setStyleSheet("color: black")
+        self.itemname_label.setFont(lbl_font)
+        self.itemname_label.setText("Unit")
+
+        #Model box
+        self.model_box = QtWidgets.QLineEdit(self.add_window)
+        self.model_box.setGeometry(60, 260, 230, 30)
+        self.model_box.setFont(QtGui.QFont("Arial", 11))
+        self.model_box.setStyleSheet("background-color: white; border-radius: 10px;")
+        self.model_box.setAlignment(Qt.AlignCenter)
+
+        # Model Label
+        self.itemname_label = QtWidgets.QLabel(self.add_window)
+        self.itemname_label.setGeometry(65, 293, 100, 18)
+        self.itemname_label.setStyleSheet("color: black")
+        self.itemname_label.setFont(lbl_font)
+        self.itemname_label.setText("Model")
+
+        #Remarks Box
+        self.remarks_box = QtWidgets.QLineEdit(self.add_window)
+        self.remarks_box.setGeometry(60, 330, 200, 30)
+        self.remarks_box.setFont(QtGui.QFont("Arial", 11))
+        self.remarks_box.setStyleSheet("background-color: white; border-radius: 10px;")
+
+        # Remarks Label
+        self.itemname_label = QtWidgets.QLabel(self.add_window)
+        self.itemname_label.setGeometry(65, 360, 100, 18)
+        self.itemname_label.setStyleSheet("color: black")
+        self.itemname_label.setFont(lbl_font)
+        self.itemname_label.setText("Itemname")
+
+        #Add Button
+        self.add_btn = QtWidgets.QPushButton(self.add_window)
+        self.add_btn.setGeometry(100, 420, 100, 30)
+        self.add_btn.setText("Add")
+        self.add_btn.setStyleSheet("background-color: white;")
+        self.add_btn.clicked.connect(click)
+
+        #cancel button
+        self.cancel_btn = QtWidgets.QPushButton(self.add_window)
+        self.cancel_btn.setGeometry(270, 420, 100, 30)
+        self.cancel_btn.setText("Cancel")
+        self.cancel_btn.setStyleSheet("background-color: white;")
+        self.cancel_btn.clicked.connect(cancel)
+
+
+
+        self.add_window.show()
+
+
+
+
 
     def update_btn_clicked(self):
         try:
