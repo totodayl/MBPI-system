@@ -1,9 +1,17 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 import psycopg2
 import pandas as pd
 import datetime as dt
 
+
+
+
+class ClickableLabel(QtWidgets.QLabel):
+    clicked = pyqtSignal()
+
+    def mousePressEvent(self, event):
+        self.clicked.emit()
 
 class Ui_LoginWindow(object):
     def setupUi(self, LoginWindow):
@@ -254,14 +262,54 @@ class Ui_LoginWindow(object):
         self.timer.timeout.connect(self.updateDateTime)
         self.timer.start(1000)
 
-        self.icon_label = QtWidgets.QLabel(self.login_window)
-        self.icon_label.setGeometry(50, 50, 64, 64)  # Set size and position
-        self.icon_label.setPixmap(QtGui.QIcon('add.png').pixmap(64, 64))  # Set icon
-        self.icon_label.setScaledContents(True)  # Scale icon to fit the label
-        self.icon_label.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+
+        #Add Entry Button
+        self.add_btn_icon = ClickableLabel(self.login_window)
+        self.add_btn_icon.setGeometry(1125, 100, 50, 50)  # Set size and position
+        self.add_btn_icon.setPixmap(QtGui.QIcon('add.png').pixmap(50, 50))  # Set icon
+        self.add_btn_icon.setScaledContents(True)  # Scale icon to fit the label
+        self.add_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
-        self.icon_label.clicked.connect(self.add_btn_clicked)
+        self.add_btn_icon.clicked.connect(self.add_btn_clicked)
+        self.add_btn_icon.show()
+
+        self.update_btn_icon = ClickableLabel(self.login_window)
+        self.update_btn_icon.setGeometry(1125, 175, 50, 50)  # Set size and position
+        self.update_btn_icon.setPixmap(QtGui.QIcon('add.png').pixmap(50, 50))  # Set icon
+        self.update_btn_icon.setScaledContents(True)  # Scale icon to fit the label
+        self.update_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+
+        # Connect the clicked signal of the QLabel to the on_icon_clicked slot
+        self.update_btn_icon.clicked.connect(self.add_btn_clicked)
+        self.update_btn_icon.show()
+
+        self.filter_btn_icon = ClickableLabel(self.login_window)
+        self.filter_btn_icon.setGeometry(1125, 250, 50, 50)  # Set size and position
+        self.filter_btn_icon.setPixmap(QtGui.QIcon('add.png').pixmap(50, 50))  # Set icon
+        self.filter_btn_icon.setScaledContents(True)  # Scale icon to fit the label
+        self.filter_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+
+        # Connect the clicked signal of the QLabel to the on_icon_clicked slot
+        self.filter_btn_icon.clicked.connect(self.add_btn_clicked)
+        self.filter_btn_icon.show()
+
+        self.delete_btn_icon = ClickableLabel(self.login_window)
+        self.delete_btn_icon.setGeometry(1125, 325, 50, 50)  # Set size and position
+        self.delete_btn_icon.setPixmap(QtGui.QIcon('add.png').pixmap(50, 50))  # Set icon
+        self.delete_btn_icon.setScaledContents(True)  # Scale icon to fit the label
+        self.delete_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+
+        # Connect the clicked signal of the QLabel to the on_icon_clicked slot
+        self.delete_btn_icon.clicked.connect(self.add_btn_clicked)
+        self.delete_btn_icon.show()
+
+
+
+
+
+
+
 
 
 
