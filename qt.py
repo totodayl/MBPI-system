@@ -6,7 +6,6 @@ import datetime as dt
 
 
 
-
 class ClickableLabel(QtWidgets.QLabel):
     clicked = pyqtSignal()
 
@@ -99,10 +98,10 @@ class Ui_LoginWindow(object):
         self.table.itemSelectionChanged.connect(self.show_selected)  # Selection updates
 
 
-        # This part below is for showing logs
+        # This part below is for Information Box
 
         self.info_box = QtWidgets.QWidget(self.login_window)
-        self.info_box.setGeometry(QtCore.QRect(80, 540, 1031, 270))
+        self.info_box.setGeometry(QtCore.QRect(80, 560, 1031, 270))
         self.info_box.setStyleSheet("""
         background-color: white;
         border-top-left-radius: 20px; 
@@ -114,10 +113,11 @@ class Ui_LoginWindow(object):
         self.info_box.show()
 
         self.info_border = QtWidgets.QWidget(self.login_window)
-        self.info_border.setGeometry(QtCore.QRect(80, 540, 1031, 60))
+        self.info_border.setGeometry(QtCore.QRect(80, 560, 1031, 60))
         self.info_border.setStyleSheet(
             "background-color: rgb(0,109,184); border-top-left-radius: 20px; border-top-right-radius: 20px;")
         self.info_border.show()
+
 
 
         # Date Label
