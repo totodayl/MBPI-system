@@ -245,7 +245,7 @@ class Ui_LoginWindow(object):
         self.update_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
-        self.update_btn_icon.clicked.connect(self.add_btn_clicked)
+        self.update_btn_icon.clicked.connect(self.update_btn_clicked)
         self.update_btn_icon.show()
 
         self.filter_btn_icon = ClickableLabel(self.login_window)
@@ -316,7 +316,7 @@ class Ui_LoginWindow(object):
         if selected:
             items = [item.text() for item in selected]
             items = items[:self.columns]
-            self.clicked_values = {
+            self.selected_values = {
                 "ctrl_num": items[0],
                 "item_name": items[1],
                 "quantity": str(items[2]),
@@ -330,16 +330,11 @@ class Ui_LoginWindow(object):
 
             }
             # show the selected values in the UI
-            itemname = self.itemname_box.setText(self.clicked_values["item_name"])
-            quantity = self.quantity_box.setText(self.clicked_values["quantity"])
-            unit = self.unit_box.setText(self.clicked_values["unit"])
-            model = self.model_box.setText(self.clicked_values["model_name"])
-            remark = self.remarks_box.setText(self.clicked_values["remarks"])
 
-            self.encoded_by.setText(f"Encoded By: {self.clicked_values['encoded_by']}")
-            self.encoded_date.setText(f"Date Encoded: {self.clicked_values['date_encoded']}")
-            self.updated_by.setText(f"Updated By: {self.clicked_values['updated_by']}")
-            self.updated_date.setText(f"Last Update: {self.clicked_values['last_updated']}")
+            self.encoded_by.setText(f"Encoded By: {self.selected_values['encoded_by']}")
+            self.encoded_date.setText(f"Date Encoded: {self.selected_values['date_encoded']}")
+            self.updated_by.setText(f"Updated By: {self.selected_values['updated_by']}")
+            self.updated_date.setText(f"Last Update: {self.selected_values['last_updated']}")
 
     def parse_inputs(self):
 
@@ -480,49 +475,125 @@ class Ui_LoginWindow(object):
         self.cancel_btn.setStyleSheet("background-color: white;")
         self.cancel_btn.clicked.connect(cancel)
 
-
-
         self.add_window.show()
 
 
 
-
-
     def update_btn_clicked(self):
-        try:
-            id = self.clicked_values["ctrl_num"]
-            self.parse_inputs()
-            if self.user_inputs["itemname"] == None or self.user_inputs["quantity"] == None or self.user_inputs[
-                "model_name"] == None:
-                QtWidgets.QMessageBox.critical(self.login_window, "Cannot be Null",
-                                               "Item Name, Quantity and Model Name cannot be empty")
 
-            else:
-                try:
-                    int(self.user_inputs["quantity"])
-                    cursor.execute(f"""
-                                                                            UPDATE tbl_maintenance
-                                                                            SET itemname = '{self.user_inputs["itemname"]}',
-                                                                            quantity = '{"NULL" if self.user_inputs["quantity"] == "" else self.user_inputs["quantity"]}', 
-                                                                            unit = '{"NULL" if self.user_inputs["unit"] == "" else self.user_inputs["unit"]}', 
-                                                                            model_name = '{"NULL" if self.user_inputs["model_name"] == "" else self.user_inputs["model_name"]}', 
-                                                                            remarks = '{"NULL" if self.user_inputs["remarks"] == "" else self.user_inputs["remarks"]}',
-                                                                            encoded_by = 'admin'
-                                                                            WHERE control_num = {id}
-                                                                            """)
-                    self.conn.commit()
-                    self.clear_inputs()
-                    self.show_table()
-                    self.table.itemSelectionChanged.connect(self.show_selected)
-                except:
-                    QtWidgets.QMessageBox.critical(self.login_window, "Invalid Data", "Quantity only accepts Integer")
+        if self.selected_values != None:
+            lbl_font = QtGui.QFont("Arial", 11)
+            lbl_font.setBold(True)
 
-        except Exception as e:
-            print(e)
-            self.conn.rollback()
-            self.clear_inputs()
+            self.add_window = QtWidgets.QWidget()
+            self.add_window.setWindowTitle("Update Data")
+            self.add_window.setStyleSheet("background-color : rgba(30,131,177,255)")
+            self.add_window.setGeometry(750, 420, 500, 400)
+            self.add_window.setFixedSize(450, 500)
+
+            # Itemname Box
+            self.itemname_box = QtWidgets.QLineEdit(self.add_window)
+            self.itemname_box.setGeometry(60, 130, 330, 30)
+            self.itemname_box.setFont(QtGui.QFont("Arial", 11))
+            self.itemname_box.setStyleSheet("background-color: white; border-radius: 10px;")
+            self.itemname_box.setAlignment(Qt.AlignCenter)
+
+            # Itemname Label
+            self.itemname_label = QtWidgets.QLabel(self.add_window)
+            self.itemname_label.setGeometry(65, 168, 100, 18)
+            self.itemname_label.setStyleSheet("color: black")
+            self.itemname_label.setFont(lbl_font)
+            self.itemname_label.setText("Itemname")
+
+            # Quantity Box
+            self.quantity_box = QtWidgets.QLineEdit(self.add_window)
+            self.quantity_box.setGeometry(60, 190, 100, 30)
+            self.quantity_box.setFont(QtGui.QFont("Arial", 11))
+            self.quantity_box.setStyleSheet("background-color: white; border-radius: 10px;")
+            self.quantity_box.setAlignment(Qt.AlignCenter)
+
+            # Quantity Label
+            self.itemname_label = QtWidgets.QLabel(self.add_window)
+            self.itemname_label.setGeometry(65, 223, 100, 18)
+            self.itemname_label.setStyleSheet("color: black")
+            self.itemname_label.setFont(lbl_font)
+            self.itemname_label.setText("Quantity")
+
+            # Unit Box
+            self.unit_box = QtWidgets.QLineEdit(self.add_window)
+            self.unit_box.setGeometry(290, 190, 100, 30)
+            self.unit_box.setFont(lbl_font)
+            self.unit_box.setStyleSheet("background-color: white; border-radius: 10px;")
+            self.unit_box.setAlignment(Qt.AlignCenter)
+
+            # Unit Label
+            self.itemname_label = QtWidgets.QLabel(self.add_window)
+            self.itemname_label.setGeometry(320, 223, 100, 18)
+            self.itemname_label.setStyleSheet("color: black")
+            self.itemname_label.setFont(lbl_font)
+            self.itemname_label.setText("Unit")
+
+            # Model box
+            self.model_box = QtWidgets.QLineEdit(self.add_window)
+            self.model_box.setGeometry(60, 260, 230, 30)
+            self.model_box.setFont(QtGui.QFont("Arial", 11))
+            self.model_box.setStyleSheet("background-color: white; border-radius: 10px;")
+            self.model_box.setAlignment(Qt.AlignCenter)
+
+            # Model Label
+            self.itemname_label = QtWidgets.QLabel(self.add_window)
+            self.itemname_label.setGeometry(65, 293, 100, 18)
+            self.itemname_label.setStyleSheet("color: black")
+            self.itemname_label.setFont(lbl_font)
+            self.itemname_label.setText("Model")
+
+            # Remarks Box
+            self.remarks_box = QtWidgets.QLineEdit(self.add_window)
+            self.remarks_box.setGeometry(60, 330, 200, 30)
+            self.remarks_box.setFont(QtGui.QFont("Arial", 11))
+            self.remarks_box.setStyleSheet("background-color: white; border-radius: 10px;")
+
+            # Remarks Label
+            self.itemname_label = QtWidgets.QLabel(self.add_window)
+            self.itemname_label.setGeometry(65, 360, 100, 18)
+            self.itemname_label.setStyleSheet("color: black")
+            self.itemname_label.setFont(lbl_font)
+            self.itemname_label.setText("Itemname")
+
+            # Add Button
+            self.add_btn = QtWidgets.QPushButton(self.add_window)
+            self.add_btn.setGeometry(100, 420, 100, 30)
+            self.add_btn.setText("Add")
+            self.add_btn.setStyleSheet("background-color: white;")
+
+            # cancel button
+            self.cancel_btn = QtWidgets.QPushButton(self.add_window)
+            self.cancel_btn.setGeometry(270, 420, 100, 30)
+            self.cancel_btn.setText("Cancel")
+            self.cancel_btn.setStyleSheet("background-color: white;")
+
+
+            #set the selected value to the box
+            self.itemname_box.setText(self.selected_values["item_name"])
+            self.quantity_box.setText(self.selected_values["quantity"])
+            self.unit_box.setText(self.selected_values["unit"])
+            self.model_box.setText(self.selected_values["model_name"])
+            self.remarks_box.setText(self.selected_values["remarks"])
+
+
+            self.table.itemSelectionChanged.connect(self.show_selected)
+            self.add_window.show()
+
+        else:
+            QtWidgets.QMessageBox.information(self.add_window, "No Results",
+                                              "No Selected Items")
             self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
+
+
+
+
+
 
     def search_btn_clicked(self):
         try:
@@ -605,7 +676,7 @@ class Ui_LoginWindow(object):
             cursor.execute(f"""
             UPDATE tbl_maintenance
             SET deleted = 'True'
-            WHERE control_num = '{self.clicked_values["ctrl_num"]}'
+            WHERE control_num = '{self.selected_values["ctrl_num"]}'
 
             """)
             self.conn.commit()
