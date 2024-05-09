@@ -89,7 +89,7 @@ class Ui_LoginWindow(object):
             self.login_btn.deleteLater()
         except:
             pass
-        self.login_window.setStyleSheet("background-color: rgb(165, 200, 255)")
+        self.login_window.setStyleSheet("background-color: white")
         # Setting the size and position of the main window
         LoginWindow.setFixedSize(1200, 900)  # fixed size
         LoginWindow.move(360, 100)
@@ -101,41 +101,23 @@ class Ui_LoginWindow(object):
 
         # This part below is for showing logs
 
-        # Encoded By Label
-        self.encoded_by = QtWidgets.QLabel(self.login_window)
-        self.encoded_by.setText("Encoded By: ")
-        self.encoded_by.setGeometry(QtCore.QRect(100, 700, 400, 25))
-        self.encoded_by.setAutoFillBackground(False)
-        self.encoded_by.setFont(QtGui.QFont("Arial", 12))
-        self.encoded_by.setStyleSheet('color: red')
-        self.encoded_by.show()
+        self.info_box = QtWidgets.QWidget(self.login_window)
+        self.info_box.setGeometry(QtCore.QRect(80, 540, 1031, 270))
+        self.info_box.setStyleSheet("""
+        background-color: white;
+        border-top-left-radius: 20px; 
+        border-top-right-radius: 20px; 
+        border-bottom-left-radius: 20px; 
+        border-bottom-right-radius: 20px;
+        border: 2px solid rgb(0,109,184)
+        """)
+        self.info_box.show()
 
-        # Encoded Date Label
-        self.encoded_date = QtWidgets.QLabel(self.login_window)
-        self.encoded_date.setText("Date Encoded: ")
-        self.encoded_date.setGeometry(QtCore.QRect(100, 723, 400, 25))
-        self.encoded_date.setAutoFillBackground(False)
-        self.encoded_date.setFont(QtGui.QFont("Arial", 12))
-        self.encoded_date.setStyleSheet('color: red')
-        self.encoded_date.show()
-
-        # Updated By Label
-        self.updated_by = QtWidgets.QLabel(self.login_window)
-        self.updated_by.setText("Updated By: ")
-        self.updated_by.setGeometry(QtCore.QRect(100, 746, 400, 25))
-        self.updated_by.setAutoFillBackground(False)
-        self.updated_by.setFont(QtGui.QFont("Arial", 12))
-        self.updated_by.setStyleSheet('color: red')
-        self.updated_by.show()
-
-        # Date Updated Label
-        self.updated_date = QtWidgets.QLabel(self.login_window)
-        self.updated_date.setText("Updated By: ")
-        self.updated_date.setGeometry(QtCore.QRect(100, 769, 400, 25))
-        self.updated_date.setAutoFillBackground(False)
-        self.updated_date.setFont(QtGui.QFont("Arial", 12))
-        self.updated_date.setStyleSheet('color: red')
-        self.updated_date.show()
+        self.info_border = QtWidgets.QWidget(self.login_window)
+        self.info_border.setGeometry(QtCore.QRect(80, 540, 1031, 60))
+        self.info_border.setStyleSheet(
+            "background-color: rgb(0,109,184); border-top-left-radius: 20px; border-top-right-radius: 20px;")
+        self.info_border.show()
 
 
         # Date Label
@@ -252,10 +234,7 @@ class Ui_LoginWindow(object):
             }
             # show the selected values in the UI
 
-            self.encoded_by.setText(f"Encoded By: {self.selected_values['encoded_by']}")
-            self.encoded_date.setText(f"Date Encoded: {self.selected_values['date_encoded']}")
-            self.updated_by.setText(f"Updated By: {self.selected_values['updated_by']}")
-            self.updated_date.setText(f"Last Update: {self.selected_values['last_updated']}")
+
 
     def parse_inputs(self):
 
