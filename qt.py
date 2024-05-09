@@ -97,85 +97,7 @@ class Ui_LoginWindow(object):
         # add the table to the Window
         self.show_table()
         self.table.itemSelectionChanged.connect(self.show_selected)  # Selection updates
-        # Itemname textbox
-        self.itemname_box = QtWidgets.QLineEdit(self.login_window)
-        self.itemname_box.setGeometry(QtCore.QRect(100, 520, 190, 30))
-        self.itemname_box.setStyleSheet("background-color: white;")
-        self.itemname_box.setFont(QtGui.QFont("Arial", 11))
-        self.itemname_box.setAutoFillBackground(False)
-        self.itemname_box.show()
 
-        # Itemname Label
-        self.itemname_label = QtWidgets.QLabel(self.login_window)
-        self.itemname_label.setText("Item Name")
-        self.itemname_label.setGeometry(QtCore.QRect(155, 550, 100, 30))
-        self.itemname_label.setAutoFillBackground(False)
-        self.itemname_label.setFont(QtGui.QFont("Arial", 11))
-        self.itemname_label.show()
-
-        # Quantity textbox
-        self.quantity_box = QtWidgets.QLineEdit(self.login_window)
-        self.quantity_box.setGeometry(QtCore.QRect(340, 520, 70, 30))
-        self.quantity_box.setStyleSheet("background-color: white;")
-        self.quantity_box.setFont(QtGui.QFont("Arial", 11))
-        self.quantity_box.setAutoFillBackground(False)
-        self.quantity_box.show()
-
-        # Quantity Label
-        self.quantity_label = QtWidgets.QLabel(self.login_window)
-        self.quantity_label.setText("Quantity")
-        self.quantity_label.setGeometry(QtCore.QRect(345, 550, 70, 30))
-        self.quantity_label.setAutoFillBackground(False)
-        self.quantity_label.setFont(QtGui.QFont("Arial", 11))
-        self.quantity_label.show()
-
-        # Unit textbox
-        self.unit_box = QtWidgets.QLineEdit(self.login_window)
-        self.unit_box.setGeometry(QtCore.QRect(460, 520, 70, 30))
-        self.unit_box.setStyleSheet("background-color: white;")
-        self.unit_box.setFont(QtGui.QFont("Arial", 11))
-        self.unit_box.setAutoFillBackground(False)
-        self.unit_box.show()
-
-        # Unit Label
-        self.unit_label = QtWidgets.QLabel(self.login_window)
-        self.unit_label.setText("Unit")
-        self.unit_label.setGeometry(QtCore.QRect(480, 550, 70, 30))
-        self.unit_label.setAutoFillBackground(False)
-        self.unit_label.setFont(QtGui.QFont("Arial", 11))
-        self.unit_label.show()
-
-        # model textbox
-        self.model_box = QtWidgets.QLineEdit(self.login_window)
-        self.model_box.setGeometry(QtCore.QRect(600, 520, 190, 30))
-        self.model_box.setStyleSheet("background-color: white;")
-        self.model_box.setFont(QtGui.QFont("Arial", 10))
-        self.model_box.setAutoFillBackground(False)
-        self.model_box.show()
-
-        # model label
-        self.model_label = QtWidgets.QLabel(self.login_window)
-        self.model_label.setText("Model")
-        self.model_label.setGeometry(QtCore.QRect(680, 550, 70, 30))
-        self.model_label.setAutoFillBackground(False)
-        self.model_label.setFont(QtGui.QFont("Arial", 11))
-        self.model_label.show()
-
-        # remarks textbox
-        self.remarks_box = QtWidgets.QLineEdit(self.login_window)
-        self.remarks_box.setGeometry(QtCore.QRect(850, 520, 190, 30))
-        self.remarks_box.setStyleSheet("background-color: white;")
-        self.remarks_box.setFont(QtGui.QFont("Arial", 10))
-        self.remarks_box.setAutoFillBackground(False)
-        self.remarks_box.show()
-
-        # remarks label
-        self.remarks_label = QtWidgets.QLabel(self.login_window)
-        self.remarks_label.setText("Remarks")
-        self.remarks_label.setGeometry(QtCore.QRect(920, 550, 70, 30))
-        self.remarks_label.setAutoFillBackground(False)
-        self.remarks_label.setFont(QtGui.QFont("Arial", 11))
-        self.remarks_label.show()
 
         # This part below is for showing logs
 
@@ -293,7 +215,6 @@ class Ui_LoginWindow(object):
         cursor.execute(
             "SELECT column_name FROM information_schema.columns WHERE table_name = 'tbl_maintenance';")  # query for getting the table names
         column_names = ['control_num', 'itemname', 'quantity', 'unit', 'model_name', 'remarks', "deleted", 'encoded_by', 'date_encoded', 'updated_by', 'last_updated']
-        print(column_names)
         self.rows = len(query_result)
         self.columns = len(query_result[0])
 
@@ -317,16 +238,16 @@ class Ui_LoginWindow(object):
             items = [item.text() for item in selected]
             items = items[:self.columns]
             self.selected_values = {
-                "ctrl_num": items[0],
-                "item_name": items[1],
-                "quantity": str(items[2]),
-                "unit": items[3],
-                "model_name": items[4],
-                "remarks": items[5],
-                "encoded_by": items[7],
-                "date_encoded": items[8],
-                "updated_by": items[9],
-                "last_updated": items[10]
+                "ctrl_num": items[0].strip(),
+                "itemname": items[1].strip(),
+                "quantity": items[2],
+                "unit": items[3].strip(),
+                "model_name": items[4].strip(),
+                "remarks": items[5].strip(),
+                "encoded_by": items[7].strip(),
+                "date_encoded": items[8].strip(),
+                "updated_by": items[9].strip(),
+                "last_updated": items[10].strip()
 
             }
             # show the selected values in the UI
@@ -340,11 +261,11 @@ class Ui_LoginWindow(object):
 
         # Set to None as default if no inputs found
         self.user_inputs = {
-            "itemname": self.itemname_box.text(),
-            "quantity": self.quantity_box.text(),
-            "unit": self.unit_box.text(),
-            "model_name": self.model_box.text(),
-            "remarks": self.remarks_box.text()
+            "itemname": self.itemname_box.text().strip(),
+            "quantity": self.quantity_box.text().strip(),
+            "unit": self.unit_box.text().strip(),
+            "model_name": self.model_box.text().strip(),
+            "remarks": self.remarks_box.text().strip()
         }
 
     def clear_inputs(self):
@@ -480,118 +401,140 @@ class Ui_LoginWindow(object):
 
 
     def update_btn_clicked(self):
-
-        if self.selected_values != None:
-            lbl_font = QtGui.QFont("Arial", 11)
-            lbl_font.setBold(True)
-
-            self.add_window = QtWidgets.QWidget()
-            self.add_window.setWindowTitle("Update Data")
-            self.add_window.setStyleSheet("background-color : rgba(30,131,177,255)")
-            self.add_window.setGeometry(750, 420, 500, 400)
-            self.add_window.setFixedSize(450, 500)
-
-            # Itemname Box
-            self.itemname_box = QtWidgets.QLineEdit(self.add_window)
-            self.itemname_box.setGeometry(60, 130, 330, 30)
-            self.itemname_box.setFont(QtGui.QFont("Arial", 11))
-            self.itemname_box.setStyleSheet("background-color: white; border-radius: 10px;")
-            self.itemname_box.setAlignment(Qt.AlignCenter)
-
-            # Itemname Label
-            self.itemname_label = QtWidgets.QLabel(self.add_window)
-            self.itemname_label.setGeometry(65, 168, 100, 18)
-            self.itemname_label.setStyleSheet("color: black")
-            self.itemname_label.setFont(lbl_font)
-            self.itemname_label.setText("Itemname")
-
-            # Quantity Box
-            self.quantity_box = QtWidgets.QLineEdit(self.add_window)
-            self.quantity_box.setGeometry(60, 190, 100, 30)
-            self.quantity_box.setFont(QtGui.QFont("Arial", 11))
-            self.quantity_box.setStyleSheet("background-color: white; border-radius: 10px;")
-            self.quantity_box.setAlignment(Qt.AlignCenter)
-
-            # Quantity Label
-            self.itemname_label = QtWidgets.QLabel(self.add_window)
-            self.itemname_label.setGeometry(65, 223, 100, 18)
-            self.itemname_label.setStyleSheet("color: black")
-            self.itemname_label.setFont(lbl_font)
-            self.itemname_label.setText("Quantity")
-
-            # Unit Box
-            self.unit_box = QtWidgets.QLineEdit(self.add_window)
-            self.unit_box.setGeometry(290, 190, 100, 30)
-            self.unit_box.setFont(lbl_font)
-            self.unit_box.setStyleSheet("background-color: white; border-radius: 10px;")
-            self.unit_box.setAlignment(Qt.AlignCenter)
-
-            # Unit Label
-            self.itemname_label = QtWidgets.QLabel(self.add_window)
-            self.itemname_label.setGeometry(320, 223, 100, 18)
-            self.itemname_label.setStyleSheet("color: black")
-            self.itemname_label.setFont(lbl_font)
-            self.itemname_label.setText("Unit")
-
-            # Model box
-            self.model_box = QtWidgets.QLineEdit(self.add_window)
-            self.model_box.setGeometry(60, 260, 230, 30)
-            self.model_box.setFont(QtGui.QFont("Arial", 11))
-            self.model_box.setStyleSheet("background-color: white; border-radius: 10px;")
-            self.model_box.setAlignment(Qt.AlignCenter)
-
-            # Model Label
-            self.itemname_label = QtWidgets.QLabel(self.add_window)
-            self.itemname_label.setGeometry(65, 293, 100, 18)
-            self.itemname_label.setStyleSheet("color: black")
-            self.itemname_label.setFont(lbl_font)
-            self.itemname_label.setText("Model")
-
-            # Remarks Box
-            self.remarks_box = QtWidgets.QLineEdit(self.add_window)
-            self.remarks_box.setGeometry(60, 330, 200, 30)
-            self.remarks_box.setFont(QtGui.QFont("Arial", 11))
-            self.remarks_box.setStyleSheet("background-color: white; border-radius: 10px;")
-
-            # Remarks Label
-            self.itemname_label = QtWidgets.QLabel(self.add_window)
-            self.itemname_label.setGeometry(65, 360, 100, 18)
-            self.itemname_label.setStyleSheet("color: black")
-            self.itemname_label.setFont(lbl_font)
-            self.itemname_label.setText("Itemname")
-
-            # Add Button
-            self.add_btn = QtWidgets.QPushButton(self.add_window)
-            self.add_btn.setGeometry(100, 420, 100, 30)
-            self.add_btn.setText("Add")
-            self.add_btn.setStyleSheet("background-color: white;")
-
-            # cancel button
-            self.cancel_btn = QtWidgets.QPushButton(self.add_window)
-            self.cancel_btn.setGeometry(270, 420, 100, 30)
-            self.cancel_btn.setText("Cancel")
-            self.cancel_btn.setStyleSheet("background-color: white;")
+        def update():
+            try:
+                self.parse_inputs()
+                cursor.execute(f"""UPDATE tbl_maintenance
+                                SET itemname = '{self.user_inputs["itemname"]}', quantity = {self.user_inputs["quantity"]}, 
+                                unit = '{self.user_inputs["unit"]}',model_name = '{self.user_inputs["model_name"]}',
+                                remarks = '{self.user_inputs["remarks"]}'
+                                WHERE control_num = {self.selected_values["ctrl_num"]}
+                                """)
+                for key,value in self.selected_values.items():
+                    print(key,value)
 
 
-            #set the selected value to the box
-            self.itemname_box.setText(self.selected_values["item_name"])
-            self.quantity_box.setText(self.selected_values["quantity"])
-            self.unit_box.setText(self.selected_values["unit"])
-            self.model_box.setText(self.selected_values["model_name"])
-            self.remarks_box.setText(self.selected_values["remarks"])
+                self.conn.commit()
+                self.updt_window.close()
+                self.clear_inputs()
+                self.show_table()
+                self.table.itemSelectionChanged.connect(self.show_selected)
 
 
-            self.table.itemSelectionChanged.connect(self.show_selected)
-            self.add_window.show()
+            except Exception as e:
+                print(e)
+                self.clear_inputs()
+                self.show_table()
 
-        else:
-            QtWidgets.QMessageBox.information(self.add_window, "No Results",
-                                              "No Selected Items")
+        def cancel():
+            self.updt_window.close()
             self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
 
 
 
+        lbl_font = QtGui.QFont("Arial", 11)
+        lbl_font.setBold(True)
+
+        self.updt_window = QtWidgets.QWidget()
+        self.updt_window.setWindowTitle("Update Data")
+        self.updt_window.setStyleSheet("background-color : rgba(30,131,177,255)")
+        self.updt_window.setGeometry(750, 420, 500, 400)
+        self.updt_window.setFixedSize(450, 500)
+
+        #Itemname Box
+        self.itemname_box = QtWidgets.QLineEdit(self.updt_window)
+        self.itemname_box.setGeometry(60, 130, 330, 30)
+        self.itemname_box.setFont(QtGui.QFont("Arial", 11))
+        self.itemname_box.setStyleSheet("background-color: white; border-radius: 10px;")
+        self.itemname_box.setAlignment(Qt.AlignCenter)
+
+        #Itemname Label
+        self.itemname_label = QtWidgets.QLabel(self.updt_window)
+        self.itemname_label.setGeometry(65, 168, 100, 18)
+        self.itemname_label.setStyleSheet("color: black")
+        self.itemname_label.setFont(lbl_font)
+        self.itemname_label.setText("Itemname")
+
+        # Quantity Box
+        self.quantity_box = QtWidgets.QLineEdit(self.updt_window)
+        self.quantity_box.setGeometry(60, 190, 100, 30)
+        self.quantity_box.setFont(QtGui.QFont("Arial", 11))
+        self.quantity_box.setStyleSheet("background-color: white; border-radius: 10px;")
+        self.quantity_box.setAlignment(Qt.AlignCenter)
+
+        # Quantity Label
+        self.itemname_label = QtWidgets.QLabel(self.updt_window)
+        self.itemname_label.setGeometry(65, 223, 100, 18)
+        self.itemname_label.setStyleSheet("color: black")
+        self.itemname_label.setFont(lbl_font)
+        self.itemname_label.setText("Quantity")
+
+        # Unit Box
+        self.unit_box = QtWidgets.QLineEdit(self.updt_window)
+        self.unit_box.setGeometry(290, 190, 100, 30)
+        self.unit_box.setFont(lbl_font)
+        self.unit_box.setStyleSheet("background-color: white; border-radius: 10px;")
+        self.unit_box.setAlignment(Qt.AlignCenter)
+
+        # Unit Label
+        self.itemname_label = QtWidgets.QLabel(self.updt_window)
+        self.itemname_label.setGeometry(320, 223, 100, 18)
+        self.itemname_label.setStyleSheet("color: black")
+        self.itemname_label.setFont(lbl_font)
+        self.itemname_label.setText("Unit")
+
+        # Model box
+        self.model_box = QtWidgets.QLineEdit(self.updt_window)
+        self.model_box.setGeometry(60, 260, 230, 30)
+        self.model_box.setFont(QtGui.QFont("Arial", 11))
+        self.model_box.setStyleSheet("background-color: white; border-radius: 10px;")
+        self.model_box.setAlignment(Qt.AlignCenter)
+
+        # Model Label
+        self.itemname_label = QtWidgets.QLabel(self.updt_window)
+        self.itemname_label.setGeometry(65, 293, 100, 18)
+        self.itemname_label.setStyleSheet("color: black")
+        self.itemname_label.setFont(lbl_font)
+        self.itemname_label.setText("Model")
+
+        # Remarks Box
+        self.remarks_box = QtWidgets.QLineEdit(self.updt_window)
+        self.remarks_box.setGeometry(60, 330, 200, 30)
+        self.remarks_box.setFont(QtGui.QFont("Arial", 11))
+        self.remarks_box.setStyleSheet("background-color: white; border-radius: 10px;")
+
+        # Remarks Label
+        self.itemname_label = QtWidgets.QLabel(self.updt_window)
+        self.itemname_label.setGeometry(65, 360, 100, 18)
+        self.itemname_label.setStyleSheet("color: black")
+        self.itemname_label.setFont(lbl_font)
+        self.itemname_label.setText("Itemname")
+
+        # Update Button
+        self.update_btn = QtWidgets.QPushButton(self.updt_window)
+        self.update_btn.setGeometry(100, 420, 100, 30)
+        self.update_btn.setText("Update")
+        self.update_btn.setStyleSheet("background-color: white;")
+        self.update_btn.clicked.connect(update)
+
+        # cancel button
+        self.cancel_btn = QtWidgets.QPushButton(self.updt_window)
+        self.cancel_btn.setGeometry(270, 420, 100, 30)
+        self.cancel_btn.setText("Cancel")
+        self.cancel_btn.setStyleSheet("background-color: white;")
+        self.cancel_btn.clicked.connect(cancel)
+
+        # set the selected value to the box
+        self.itemname_box.setText(self.selected_values["itemname"])
+        self.quantity_box.setText(self.selected_values["quantity"])
+        self.unit_box.setText(self.selected_values["unit"])
+        self.model_box.setText(self.selected_values["model_name"])
+        self.remarks_box.setText(self.selected_values["remarks"])
+
+        self.table.itemSelectionChanged.connect(self.show_selected)
+
+        self.updt_window.show()
 
 
 
@@ -605,7 +548,6 @@ class Ui_LoginWindow(object):
                     pass
                 else:
                     querycon_list.append((i, j))
-            print(querycon_list)
 
             query_con = ""
 
