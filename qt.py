@@ -5,7 +5,7 @@ import pandas as pd
 import datetime as dt
 
 
-
+# Used for icons to be Clickable
 class ClickableLabel(QtWidgets.QLabel):
     clicked = pyqtSignal()
 
@@ -17,7 +17,8 @@ class Ui_LoginWindow(object):
         LoginWindow.setObjectName("LoginWindow")
         LoginWindow.resize(800, 600)
         self.login_window = QtWidgets.QWidget(LoginWindow)
-        self.login_window.setStyleSheet("background-color : qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(176, 0, 0, 255), stop:0.738636 rgba(255, 113, 250, 255))")
+        self.login_window.setStyleSheet("""background-color : qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, 
+        stop:0 rgba(176, 0, 0, 255), stop:0.738636 rgba(255, 113, 250, 255))""")
         self.login_window.setObjectName("MainWindow")
         self.username = QtWidgets.QLineEdit(self.login_window)
         self.username.setGeometry(QtCore.QRect(310, 140, 171, 31))
@@ -96,11 +97,9 @@ class Ui_LoginWindow(object):
         label_font = QtGui.QFont("Arial", 15)
         label_font.setBold(True)
 
-
         # add the table to the Window
         self.show_table()
         self.table.itemSelectionChanged.connect(self.show_selected)  # Selection updates
-
 
         # This part below is for Information Box
 
@@ -122,7 +121,7 @@ class Ui_LoginWindow(object):
             "background-color: rgb(0,109,184); border-top-left-radius: 20px; border-top-right-radius: 20px;")
         self.info_border.show()
 
-        #Control Number Label
+        # Control Number Label
         self.ctrlnum_label = QtWidgets.QLabel(self.login_window)
         self.ctrlnum_label.setGeometry(90, 575, 200, 30)
         self.ctrlnum_label.setStyleSheet("background-color: rgb(0,109,184); color : white;")
@@ -130,77 +129,74 @@ class Ui_LoginWindow(object):
         self.ctrlnum_label.setFont(QtGui.QFont("Arial", 16))
         self.ctrlnum_label.show()
 
-        #User Icon
+        # User Icon
         self.user_icon = QtWidgets.QLabel(self.login_window)
         pixmap = QtGui.QPixmap("user.png")
         self.user_icon.setPixmap(pixmap)
-        self.user_icon.setGeometry(125,630, 128,128)
+        self.user_icon.setGeometry(125, 630, 128, 128)
         self.user_icon.show()
 
-
-        #Itemname Label
+        # Itemname Label
         self.itemname_label = QtWidgets.QLabel(self.login_window)
         self.itemname_label.setGeometry(330, 635, 110, 30)
         self.itemname_label.setText("Item Name:")
         self.itemname_label.setFont(label_font)
         self.itemname_label.show()
 
-        #Model Name Label
+        # Model Name Label
         self.model_label = QtWidgets.QLabel(self.login_window)
         self.model_label.setGeometry(330, 700, 130, 30)
         self.model_label.setText("Model Name:")
         self.model_label.setFont(label_font)
         self.model_label.show()
 
-        #Remarks Label
+        # Remarks Label
         self.remarks_label = QtWidgets.QLabel(self.login_window)
         self.remarks_label.setGeometry(330, 765, 100, 30)
         self.remarks_label.setText("Remarks:")
         self.remarks_label.setFont(label_font)
         self.remarks_label.show()
 
-        #Quantity Label
+        # Quantity Label
         self.quantity_label = QtWidgets.QLabel(self.login_window)
         self.quantity_label.setGeometry(720, 635, 90, 30)
         self.quantity_label.setText("Quantity:")
         self.quantity_label.setFont(label_font)
         self.quantity_label.show()
 
-        #Unit Label
+        # Unit Label
         self.unit_label = QtWidgets.QLabel(self.login_window)
         self.unit_label.setGeometry(935, 635, 45, 30)
         self.unit_label.setText("Unit:")
         self.unit_label.setFont(label_font)
         self.unit_label.show()
 
-        #Updated By Label
+        # Updated By Label
         self.updatedby_label = QtWidgets.QLabel(self.login_window)
         self.updatedby_label.setGeometry(720, 700, 120, 30)
         self.updatedby_label.setText("Updated By:")
         self.updatedby_label.setFont(label_font)
         self.updatedby_label.show()
 
-        #Updated Date Label
+        # Updated Date Label
         self.updatedDate_label = QtWidgets.QLabel(self.login_window)
         self.updatedDate_label.setGeometry(720, 765, 120, 30)
         self.updatedDate_label.setText("Last Update:")
         self.updatedDate_label.setFont(label_font)
         self.updatedDate_label.show()
 
-
-
         # Date Label
         self.date_label = QtWidgets.QLabel(self.login_window)
-        self.date_label.setGeometry(QtCore.QRect(1000, 10, 150, 20))
-        self.date_label.setStyleSheet("background-color: white")
+        self.date_label.setGeometry(QtCore.QRect(1000, 10, 150, 30))
+        self.date_label.setFont(QtGui.QFont("Arial", 12))
+        self.date_label.setStyleSheet("background-color: white; color : red")
         self.date_label.show()
 
         self.timer = QtCore.QTimer(self.login_window)
         self.timer.timeout.connect(self.updateDateTime)
         self.timer.start(1000)
 
-
-        #Add Entry Button
+        # Add Entry Button
         self.add_btn_icon = ClickableLabel(self.login_window)
         self.add_btn_icon.setGeometry(1125, 100, 50, 50)  # Set size and position
         self.add_btn_icon.setPixmap(QtGui.QIcon('add.png').pixmap(50, 50))  # Set icon
@@ -241,16 +237,13 @@ class Ui_LoginWindow(object):
         self.delete_btn_icon.clicked.connect(self.add_btn_clicked)
         self.delete_btn_icon.show()
 
-
-
-
     # getting the table dimension
     def get_table(self, query="SELECT * FROM tbl_maintenance WHERE deleted = 'False' ORDER BY control_num DESC"):
         cursor.execute(query)
         result = cursor.fetchall()
         return result
 
-    # create an excel like table object
+    # create an Excel like table object
     def show_table(self):
 
         self.table = QtWidgets.QTableWidget(self.login_window)
@@ -265,10 +258,10 @@ class Ui_LoginWindow(object):
         query_result = self.get_table()
         cursor.execute(
             "SELECT column_name FROM information_schema.columns WHERE table_name = 'tbl_maintenance';")  # query for getting the table names
-        column_names = ['control_num', 'itemname', 'quantity', 'unit', 'model_name', 'remarks', "deleted", 'encoded_by', 'date_encoded', 'updated_by', 'last_updated']
+        column_names = ['control_num', 'itemname', 'quantity', 'unit', 'model_name', 'remarks', "deleted", 'encoded_by',
+                        'date_encoded', 'updated_by', 'last_updated']
         self.rows = len(query_result)
         self.columns = len(query_result[0])
-
 
         self.table.setColumnCount(self.columns)  # Set number of columns
         self.table.setRowCount(self.rows)  # Set number of rows
@@ -306,7 +299,6 @@ class Ui_LoginWindow(object):
             font = QtGui.QFont("Arial", 15)
             font.setBold(True)
 
-
             # Username Label
             self.username_label = QtWidgets.QLabel(self.login_window)
             self.username_label.setGeometry(100, 770, 180, 30)
@@ -315,7 +307,7 @@ class Ui_LoginWindow(object):
             self.username_label.setFont(font)
             self.username_label.show()
 
-            #Itemname Label
+            # Itemname Label
             self.itemname_label = QtWidgets.QLabel(self.login_window)
             self.itemname_label.setGeometry(450, 635, 260, 30)
             self.itemname_label.setText(self.selected_values["itemname"])
@@ -323,8 +315,7 @@ class Ui_LoginWindow(object):
             self.itemname_label.setFont(font)
             self.itemname_label.show()
 
-
-            #Model Label
+            # Model Label
             self.model_label = QtWidgets.QLabel(self.login_window)
             self.model_label.setGeometry(460, 700, 230, 30)
             self.model_label.setText(self.selected_values["model_name"])
@@ -340,7 +331,7 @@ class Ui_LoginWindow(object):
             self.remarks_label.setFont(font)
             self.remarks_label.show()
 
-            #Quantity Label
+            # Quantity Label
             self.quantity_label = QtWidgets.QLabel(self.login_window)
             self.quantity_label.setGeometry(815, 635, 115, 30)
             self.quantity_label.setStyleSheet("color : brown")
@@ -348,7 +339,7 @@ class Ui_LoginWindow(object):
             self.quantity_label.setText(self.selected_values["quantity"])
             self.quantity_label.show()
 
-            #Unit Label
+            # Unit Label
             self.unit_label = QtWidgets.QLabel(self.login_window)
             self.unit_label.setGeometry(990, 635, 115, 30)
             self.unit_label.setStyleSheet("color : brown")
@@ -356,7 +347,7 @@ class Ui_LoginWindow(object):
             self.unit_label.setText(self.selected_values["unit"])
             self.unit_label.show()
 
-            #UpdatedBy Label
+            # UpdatedBy Label
             self.updatedby_label = QtWidgets.QLabel(self.login_window)
             self.updatedby_label.setGeometry(850, 700, 115, 30)
             self.updatedby_label.setStyleSheet("color : brown")
@@ -364,7 +355,7 @@ class Ui_LoginWindow(object):
             self.updatedby_label.setText(self.selected_values["updated_by"])
             self.updatedby_label.show()
 
-            #Updated Date Label
+            # Updated Date Label
             self.updatedDate_label = QtWidgets.QLabel(self.login_window)
             self.updatedDate_label.setGeometry(850, 765, 115, 30)
             self.updatedDate_label.setStyleSheet("color : brown")
@@ -372,13 +363,8 @@ class Ui_LoginWindow(object):
             self.updatedDate_label.setText(self.selected_values["last_updated"])
             self.updatedDate_label.show()
 
-
-
             self.table.itemSelectionChanged.disconnect()
             self.table.itemSelectionChanged.connect(self.show_selected)
-
-
-
 
     def parse_inputs(self):
 
@@ -404,7 +390,6 @@ class Ui_LoginWindow(object):
     # Execute when add button is clicked
     def add_btn_clicked(self):
 
-
         def click():
             try:
                 self.parse_inputs()
@@ -421,12 +406,12 @@ class Ui_LoginWindow(object):
 
             except psycopg2.Error as e:
                 print(e)
+
         def cancel():
             self.add_window.close()
             self.show_table()
             self.table.itemSelectionChanged.disconnect()
             self.table.itemSelectionChanged.connect(self.show_selected)
-
 
         lbl_font = QtGui.QFont("Arial", 11)
         lbl_font.setBold(True)
@@ -435,51 +420,51 @@ class Ui_LoginWindow(object):
         self.add_window.setWindowTitle("ADD Data")
         self.add_window.setStyleSheet("background-color : rgba(30,131,177,255)")
         self.add_window.setGeometry(750, 420, 500, 400)
-        self.add_window.setFixedSize(450,500)
+        self.add_window.setFixedSize(450, 500)
 
-        #Itemname Box
+        # Itemname Box
         self.itemname_box = QtWidgets.QLineEdit(self.add_window)
         self.itemname_box.setGeometry(60, 130, 330, 30)
         self.itemname_box.setFont(QtGui.QFont("Arial", 11))
         self.itemname_box.setStyleSheet("background-color: white; border-radius: 10px;")
         self.itemname_box.setAlignment(Qt.AlignCenter)
 
-        #Itemname Label
+        # Itemname Label
         self.itemname_label = QtWidgets.QLabel(self.add_window)
         self.itemname_label.setGeometry(65, 168, 100, 18)
         self.itemname_label.setStyleSheet("color: black")
         self.itemname_label.setFont(lbl_font)
         self.itemname_label.setText("Itemname")
 
-        #Quantity Box
+        # Quantity Box
         self.quantity_box = QtWidgets.QLineEdit(self.add_window)
         self.quantity_box.setGeometry(60, 190, 100, 30)
         self.quantity_box.setFont(QtGui.QFont("Arial", 11))
         self.quantity_box.setStyleSheet("background-color: white; border-radius: 10px;")
         self.quantity_box.setAlignment(Qt.AlignCenter)
 
-        #Quantity Label
+        # Quantity Label
         self.quantity_label = QtWidgets.QLabel(self.add_window)
         self.quantity_label.setGeometry(65, 223, 100, 18)
         self.quantity_label.setStyleSheet("color: black")
         self.quantity_label.setFont(lbl_font)
         self.quantity_label.setText("Quantity")
 
-        #Unit Box
+        # Unit Box
         self.unit_box = QtWidgets.QLineEdit(self.add_window)
         self.unit_box.setGeometry(290, 190, 100, 30)
         self.unit_box.setFont(lbl_font)
         self.unit_box.setStyleSheet("background-color: white; border-radius: 10px;")
         self.unit_box.setAlignment(Qt.AlignCenter)
 
-        #Unit Label
+        # Unit Label
         self.unit_label = QtWidgets.QLabel(self.add_window)
         self.unit_label.setGeometry(320, 223, 100, 18)
         self.unit_label.setStyleSheet("color: black")
         self.unit_label.setFont(lbl_font)
         self.unit_label.setText("Unit")
 
-        #Model box
+        # Model box
         self.model_box = QtWidgets.QLineEdit(self.add_window)
         self.model_box.setGeometry(60, 260, 230, 30)
         self.model_box.setFont(QtGui.QFont("Arial", 11))
@@ -493,7 +478,7 @@ class Ui_LoginWindow(object):
         self.model_label.setFont(lbl_font)
         self.model_label.setText("Model")
 
-        #Remarks Box
+        # Remarks Box
         self.remarks_box = QtWidgets.QLineEdit(self.add_window)
         self.remarks_box.setGeometry(60, 330, 200, 30)
         self.remarks_box.setFont(QtGui.QFont("Arial", 11))
@@ -506,14 +491,14 @@ class Ui_LoginWindow(object):
         self.remarks_label.setFont(lbl_font)
         self.remarks_label.setText("Itemname")
 
-        #Add Button
+        # Add Button
         self.add_btn = QtWidgets.QPushButton(self.add_window)
         self.add_btn.setGeometry(100, 420, 100, 30)
         self.add_btn.setText("Add")
         self.add_btn.setStyleSheet("background-color: white;")
         self.add_btn.clicked.connect(click)
 
-        #cancel button
+        # cancel button
         self.cancel_btn = QtWidgets.QPushButton(self.add_window)
         self.cancel_btn.setGeometry(270, 420, 100, 30)
         self.cancel_btn.setText("Cancel")
@@ -522,8 +507,6 @@ class Ui_LoginWindow(object):
 
         self.add_window.show()
 
-
-
     def update_btn_clicked(self):
         def update():
             try:
@@ -531,19 +514,15 @@ class Ui_LoginWindow(object):
                 cursor.execute(f"""UPDATE tbl_maintenance
                                 SET itemname = '{self.user_inputs["itemname"]}', quantity = {self.user_inputs["quantity"]}, 
                                 unit = '{self.user_inputs["unit"]}',model_name = '{self.user_inputs["model_name"]}',
-                                remarks = '{self.user_inputs["remarks"]}'
+                                remarks = '{self.user_inputs["remarks"]}', last_updated = '{self.formattedDateTime}'
                                 WHERE control_num = {self.selected_values["ctrl_num"]}
                                 """)
-                for key,value in self.selected_values.items():
-                    print(key,value)
-
 
                 self.conn.commit()
                 self.updt_window.close()
                 self.clear_inputs()
                 self.show_table()
                 self.table.itemSelectionChanged.connect(self.show_selected)
-
 
             except Exception as e:
                 print(e)
@@ -554,8 +533,6 @@ class Ui_LoginWindow(object):
             self.updt_window.close()
             self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
-
-
 
         lbl_font = QtGui.QFont("Arial", 11)
         lbl_font.setBold(True)
@@ -657,10 +634,7 @@ class Ui_LoginWindow(object):
         self.remarks_box.setText(self.selected_values["remarks"])
 
         self.table.itemSelectionChanged.connect(self.show_selected)
-
         self.updt_window.show()
-
-
 
     def search_btn_clicked(self):
         try:
@@ -724,7 +698,6 @@ class Ui_LoginWindow(object):
                 # Update selection behavior
                 self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
-
         except Exception as e:
 
             # Handle the error, e.g., inform the user or log the error
@@ -755,7 +728,7 @@ class Ui_LoginWindow(object):
 
     def updateDateTime(self):
         self.currentDateTime = QtCore.QDateTime.currentDateTime()
-        self.formattedDateTime = self.currentDateTime.toString("yyyy-MM-dd hh:mm:ss")
+        self.formattedDateTime = self.currentDateTime.toString("MM-dd-yyyy hh:mm:ss")
         self.date_label.setText(self.formattedDateTime)
 
 
