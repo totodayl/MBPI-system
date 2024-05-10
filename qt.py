@@ -93,6 +93,10 @@ class Ui_LoginWindow(object):
         LoginWindow.setFixedSize(1200, 900)  # fixed size
         LoginWindow.move(360, 100)
 
+        label_font = QtGui.QFont("Arial", 15)
+        label_font.setBold(True)
+
+
         # add the table to the Window
         self.show_table()
         self.table.itemSelectionChanged.connect(self.show_selected)  # Selection updates
@@ -117,6 +121,71 @@ class Ui_LoginWindow(object):
         self.info_border.setStyleSheet(
             "background-color: rgb(0,109,184); border-top-left-radius: 20px; border-top-right-radius: 20px;")
         self.info_border.show()
+
+        #Control Number Label
+        self.ctrlnum_label = QtWidgets.QLabel(self.login_window)
+        self.ctrlnum_label.setGeometry(90, 575, 200, 30)
+        self.ctrlnum_label.setStyleSheet("background-color: rgb(0,109,184); color : white;")
+        self.ctrlnum_label.setText("Control Number:")
+        self.ctrlnum_label.setFont(QtGui.QFont("Arial", 16))
+        self.ctrlnum_label.show()
+
+        #User Icon
+        self.user_icon = QtWidgets.QLabel(self.login_window)
+        pixmap = QtGui.QPixmap("user.png")
+        self.user_icon.setPixmap(pixmap)
+        self.user_icon.setGeometry(125,630, 128,128)
+        self.user_icon.show()
+
+
+        #Itemname Label
+        self.itemname_label = QtWidgets.QLabel(self.login_window)
+        self.itemname_label.setGeometry(330, 635, 110, 30)
+        self.itemname_label.setText("Item Name:")
+        self.itemname_label.setFont(label_font)
+        self.itemname_label.show()
+
+        #Model Name Label
+        self.model_label = QtWidgets.QLabel(self.login_window)
+        self.model_label.setGeometry(330, 700, 130, 30)
+        self.model_label.setText("Model Name:")
+        self.model_label.setFont(label_font)
+        self.model_label.show()
+
+        #Remarks Label
+        self.remarks_label = QtWidgets.QLabel(self.login_window)
+        self.remarks_label.setGeometry(330, 765, 100, 30)
+        self.remarks_label.setText("Remarks:")
+        self.remarks_label.setFont(label_font)
+        self.remarks_label.show()
+
+        #Quantity Label
+        self.quantity_label = QtWidgets.QLabel(self.login_window)
+        self.quantity_label.setGeometry(720, 635, 90, 30)
+        self.quantity_label.setText("Quantity:")
+        self.quantity_label.setFont(label_font)
+        self.quantity_label.show()
+
+        #Unit Label
+        self.unit_label = QtWidgets.QLabel(self.login_window)
+        self.unit_label.setGeometry(935, 635, 45, 30)
+        self.unit_label.setText("Unit:")
+        self.unit_label.setFont(label_font)
+        self.unit_label.show()
+
+        #Updated By Label
+        self.updatedby_label = QtWidgets.QLabel(self.login_window)
+        self.updatedby_label.setGeometry(720, 700, 120, 30)
+        self.updatedby_label.setText("Updated By:")
+        self.updatedby_label.setFont(label_font)
+        self.updatedby_label.show()
+
+        #Updated Date Label
+        self.updatedDate_label = QtWidgets.QLabel(self.login_window)
+        self.updatedDate_label.setGeometry(720, 765, 120, 30)
+        self.updatedDate_label.setText("Last Update:")
+        self.updatedDate_label.setFont(label_font)
+        self.updatedDate_label.show()
 
 
 
@@ -234,6 +303,81 @@ class Ui_LoginWindow(object):
             }
             # show the selected values in the UI
 
+            font = QtGui.QFont("Arial", 15)
+            font.setBold(True)
+
+
+            # Username Label
+            self.username_label = QtWidgets.QLabel(self.login_window)
+            self.username_label.setGeometry(100, 770, 180, 30)
+            self.username_label.setText(self.selected_values["encoded_by"])
+            self.username_label.setAlignment(Qt.AlignCenter)
+            self.username_label.setFont(font)
+            self.username_label.show()
+
+            #Itemname Label
+            self.itemname_label = QtWidgets.QLabel(self.login_window)
+            self.itemname_label.setGeometry(450, 635, 260, 30)
+            self.itemname_label.setText(self.selected_values["itemname"])
+            self.itemname_label.setStyleSheet("color: brown")
+            self.itemname_label.setFont(font)
+            self.itemname_label.show()
+
+
+            #Model Label
+            self.model_label = QtWidgets.QLabel(self.login_window)
+            self.model_label.setGeometry(460, 700, 230, 30)
+            self.model_label.setText(self.selected_values["model_name"])
+            self.model_label.setStyleSheet("color: brown")
+            self.model_label.setFont(font)
+            self.model_label.show()
+
+            # Remarks Label
+            self.remarks_label = QtWidgets.QLabel(self.login_window)
+            self.remarks_label.setGeometry(440, 765, 260, 30)
+            self.remarks_label.setText(self.selected_values["remarks"])
+            self.remarks_label.setStyleSheet("color: brown")
+            self.remarks_label.setFont(font)
+            self.remarks_label.show()
+
+            #Quantity Label
+            self.quantity_label = QtWidgets.QLabel(self.login_window)
+            self.quantity_label.setGeometry(815, 635, 115, 30)
+            self.quantity_label.setStyleSheet("color : brown")
+            self.quantity_label.setFont(font)
+            self.quantity_label.setText(self.selected_values["quantity"])
+            self.quantity_label.show()
+
+            #Unit Label
+            self.unit_label = QtWidgets.QLabel(self.login_window)
+            self.unit_label.setGeometry(990, 635, 115, 30)
+            self.unit_label.setStyleSheet("color : brown")
+            self.unit_label.setFont(font)
+            self.unit_label.setText(self.selected_values["unit"])
+            self.unit_label.show()
+
+            #UpdatedBy Label
+            self.updatedby_label = QtWidgets.QLabel(self.login_window)
+            self.updatedby_label.setGeometry(850, 700, 115, 30)
+            self.updatedby_label.setStyleSheet("color : brown")
+            self.updatedby_label.setFont(font)
+            self.updatedby_label.setText(self.selected_values["updated_by"])
+            self.updatedby_label.show()
+
+            #Updated Date Label
+            self.updatedDate_label = QtWidgets.QLabel(self.login_window)
+            self.updatedDate_label.setGeometry(850, 765, 115, 30)
+            self.updatedDate_label.setStyleSheet("color : brown")
+            self.updatedDate_label.setFont(font)
+            self.updatedDate_label.setText(self.selected_values["last_updated"])
+            self.updatedDate_label.show()
+
+
+
+            self.table.itemSelectionChanged.disconnect()
+            self.table.itemSelectionChanged.connect(self.show_selected)
+
+
 
 
     def parse_inputs(self):
@@ -280,6 +424,7 @@ class Ui_LoginWindow(object):
         def cancel():
             self.add_window.close()
             self.show_table()
+            self.table.itemSelectionChanged.disconnect()
             self.table.itemSelectionChanged.connect(self.show_selected)
 
 
@@ -314,11 +459,11 @@ class Ui_LoginWindow(object):
         self.quantity_box.setAlignment(Qt.AlignCenter)
 
         #Quantity Label
-        self.itemname_label = QtWidgets.QLabel(self.add_window)
-        self.itemname_label.setGeometry(65, 223, 100, 18)
-        self.itemname_label.setStyleSheet("color: black")
-        self.itemname_label.setFont(lbl_font)
-        self.itemname_label.setText("Quantity")
+        self.quantity_label = QtWidgets.QLabel(self.add_window)
+        self.quantity_label.setGeometry(65, 223, 100, 18)
+        self.quantity_label.setStyleSheet("color: black")
+        self.quantity_label.setFont(lbl_font)
+        self.quantity_label.setText("Quantity")
 
         #Unit Box
         self.unit_box = QtWidgets.QLineEdit(self.add_window)
@@ -328,11 +473,11 @@ class Ui_LoginWindow(object):
         self.unit_box.setAlignment(Qt.AlignCenter)
 
         #Unit Label
-        self.itemname_label = QtWidgets.QLabel(self.add_window)
-        self.itemname_label.setGeometry(320, 223, 100, 18)
-        self.itemname_label.setStyleSheet("color: black")
-        self.itemname_label.setFont(lbl_font)
-        self.itemname_label.setText("Unit")
+        self.unit_label = QtWidgets.QLabel(self.add_window)
+        self.unit_label.setGeometry(320, 223, 100, 18)
+        self.unit_label.setStyleSheet("color: black")
+        self.unit_label.setFont(lbl_font)
+        self.unit_label.setText("Unit")
 
         #Model box
         self.model_box = QtWidgets.QLineEdit(self.add_window)
@@ -342,11 +487,11 @@ class Ui_LoginWindow(object):
         self.model_box.setAlignment(Qt.AlignCenter)
 
         # Model Label
-        self.itemname_label = QtWidgets.QLabel(self.add_window)
-        self.itemname_label.setGeometry(65, 293, 100, 18)
-        self.itemname_label.setStyleSheet("color: black")
-        self.itemname_label.setFont(lbl_font)
-        self.itemname_label.setText("Model")
+        self.model_label = QtWidgets.QLabel(self.add_window)
+        self.model_label.setGeometry(65, 293, 100, 18)
+        self.model_label.setStyleSheet("color: black")
+        self.model_label.setFont(lbl_font)
+        self.model_label.setText("Model")
 
         #Remarks Box
         self.remarks_box = QtWidgets.QLineEdit(self.add_window)
@@ -355,11 +500,11 @@ class Ui_LoginWindow(object):
         self.remarks_box.setStyleSheet("background-color: white; border-radius: 10px;")
 
         # Remarks Label
-        self.itemname_label = QtWidgets.QLabel(self.add_window)
-        self.itemname_label.setGeometry(65, 360, 100, 18)
-        self.itemname_label.setStyleSheet("color: black")
-        self.itemname_label.setFont(lbl_font)
-        self.itemname_label.setText("Itemname")
+        self.remarks_label = QtWidgets.QLabel(self.add_window)
+        self.remarks_label.setGeometry(65, 360, 100, 18)
+        self.remarks_label.setStyleSheet("color: black")
+        self.remarks_label.setFont(lbl_font)
+        self.remarks_label.setText("Itemname")
 
         #Add Button
         self.add_btn = QtWidgets.QPushButton(self.add_window)
@@ -443,11 +588,11 @@ class Ui_LoginWindow(object):
         self.quantity_box.setAlignment(Qt.AlignCenter)
 
         # Quantity Label
-        self.itemname_label = QtWidgets.QLabel(self.updt_window)
-        self.itemname_label.setGeometry(65, 223, 100, 18)
-        self.itemname_label.setStyleSheet("color: black")
-        self.itemname_label.setFont(lbl_font)
-        self.itemname_label.setText("Quantity")
+        self.quantity_label = QtWidgets.QLabel(self.updt_window)
+        self.quantity_label.setGeometry(65, 223, 100, 18)
+        self.quantity_label.setStyleSheet("color: black")
+        self.quantity_label.setFont(lbl_font)
+        self.quantity_label.setText("Quantity")
 
         # Unit Box
         self.unit_box = QtWidgets.QLineEdit(self.updt_window)
@@ -457,11 +602,11 @@ class Ui_LoginWindow(object):
         self.unit_box.setAlignment(Qt.AlignCenter)
 
         # Unit Label
-        self.itemname_label = QtWidgets.QLabel(self.updt_window)
-        self.itemname_label.setGeometry(320, 223, 100, 18)
-        self.itemname_label.setStyleSheet("color: black")
-        self.itemname_label.setFont(lbl_font)
-        self.itemname_label.setText("Unit")
+        self.unit_label = QtWidgets.QLabel(self.updt_window)
+        self.unit_label.setGeometry(320, 223, 100, 18)
+        self.unit_label.setStyleSheet("color: black")
+        self.unit_label.setFont(lbl_font)
+        self.unit_label.setText("Unit")
 
         # Model box
         self.model_box = QtWidgets.QLineEdit(self.updt_window)
@@ -471,11 +616,11 @@ class Ui_LoginWindow(object):
         self.model_box.setAlignment(Qt.AlignCenter)
 
         # Model Label
-        self.itemname_label = QtWidgets.QLabel(self.updt_window)
-        self.itemname_label.setGeometry(65, 293, 100, 18)
-        self.itemname_label.setStyleSheet("color: black")
-        self.itemname_label.setFont(lbl_font)
-        self.itemname_label.setText("Model")
+        self.model_label = QtWidgets.QLabel(self.updt_window)
+        self.model_label.setGeometry(65, 293, 100, 18)
+        self.model_label.setStyleSheet("color: black")
+        self.model_label.setFont(lbl_font)
+        self.model_label.setText("Model")
 
         # Remarks Box
         self.remarks_box = QtWidgets.QLineEdit(self.updt_window)
@@ -484,11 +629,11 @@ class Ui_LoginWindow(object):
         self.remarks_box.setStyleSheet("background-color: white; border-radius: 10px;")
 
         # Remarks Label
-        self.itemname_label = QtWidgets.QLabel(self.updt_window)
-        self.itemname_label.setGeometry(65, 360, 100, 18)
-        self.itemname_label.setStyleSheet("color: black")
-        self.itemname_label.setFont(lbl_font)
-        self.itemname_label.setText("Itemname")
+        self.remarks_label = QtWidgets.QLabel(self.updt_window)
+        self.remarks_label.setGeometry(65, 360, 100, 18)
+        self.remarks_label.setStyleSheet("color: black")
+        self.remarks_label.setFont(lbl_font)
+        self.remarks_label.setText("Itemname")
 
         # Update Button
         self.update_btn = QtWidgets.QPushButton(self.updt_window)
