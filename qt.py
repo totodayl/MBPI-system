@@ -298,6 +298,7 @@ class Ui_LoginWindow(object):
             }
             # show the selected values in the UI
 
+            # set fontstyle
             font = QtGui.QFont("Arial", 15)
             font.setBold(True)
 
@@ -359,7 +360,7 @@ class Ui_LoginWindow(object):
 
             # Updated Date Label
             self.updatedDate_label = QtWidgets.QLabel(self.login_window)
-            self.updatedDate_label.setGeometry(850, 765, 115, 30)
+            self.updatedDate_label.setGeometry(850, 765, 215, 30)
             self.updatedDate_label.setStyleSheet("color : brown")
             self.updatedDate_label.setFont(font)
             self.updatedDate_label.setText(self.selected_values["last_updated"])
@@ -391,15 +392,16 @@ class Ui_LoginWindow(object):
 
     # Execute when add button is clicked
     def add_btn_clicked(self):
-
         def click():
             try:
                 self.parse_inputs()
                 cursor.execute(f"""
-                            INSERT INTO tbl_maintenance (itemname, quantity, unit, model_name, remarks)
-                            VALUES ('{self.user_inputs["itemname"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}')
+                            INSERT INTO tbl_maintenance (itemname, quantity, unit, model_name, remarks, date_encoded)
+                            VALUES ('{self.user_inputs["itemname"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', 
+                            '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}', '{self.formattedDateTime}')
 
                             """)
+                print(self.formattedDateTime)
                 self.conn.commit()
                 self.add_window.close()
                 self.clear_inputs()
