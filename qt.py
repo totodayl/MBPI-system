@@ -12,6 +12,7 @@ class ClickableLabel(QtWidgets.QLabel):
     def mousePressEvent(self, event):
         self.clicked.emit()
 
+
 class Ui_LoginWindow(object):
     def setupUi(self, LoginWindow):
         LoginWindow.setObjectName("LoginWindow")
@@ -276,6 +277,7 @@ class Ui_LoginWindow(object):
         self.table.show()
         self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
+    # Show selected row to the Information Box below
     def show_selected(self):
         selected = self.table.selectedItems()
         if selected:
@@ -413,9 +415,11 @@ class Ui_LoginWindow(object):
             self.table.itemSelectionChanged.disconnect()
             self.table.itemSelectionChanged.connect(self.show_selected)
 
+        #set fonstyle
         lbl_font = QtGui.QFont("Arial", 11)
         lbl_font.setBold(True)
 
+        # Create new Entry Window
         self.add_window = QtWidgets.QWidget()
         self.add_window.setWindowTitle("ADD Data")
         self.add_window.setStyleSheet("background-color : rgba(30,131,177,255)")
@@ -537,20 +541,21 @@ class Ui_LoginWindow(object):
         lbl_font = QtGui.QFont("Arial", 11)
         lbl_font.setBold(True)
 
+        # Create a new window for updating data
         self.updt_window = QtWidgets.QWidget()
         self.updt_window.setWindowTitle("Update Data")
         self.updt_window.setStyleSheet("background-color : rgba(30,131,177,255)")
         self.updt_window.setGeometry(750, 420, 500, 400)
         self.updt_window.setFixedSize(450, 500)
 
-        #Itemname Box
+        # Itemname Box
         self.itemname_box = QtWidgets.QLineEdit(self.updt_window)
         self.itemname_box.setGeometry(60, 130, 330, 30)
         self.itemname_box.setFont(QtGui.QFont("Arial", 11))
         self.itemname_box.setStyleSheet("background-color: white; border-radius: 10px;")
         self.itemname_box.setAlignment(Qt.AlignCenter)
 
-        #Itemname Label
+        # Itemname Label
         self.itemname_label = QtWidgets.QLabel(self.updt_window)
         self.itemname_label.setGeometry(65, 168, 100, 18)
         self.itemname_label.setStyleSheet("color: black")
@@ -707,7 +712,7 @@ class Ui_LoginWindow(object):
             self.conn.rollback()
             self.show_table()
 
-    # Delete single selected line
+    # Delete single row data
     def delete_btn_clicked(self):
 
         try:
