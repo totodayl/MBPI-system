@@ -424,7 +424,6 @@ class Ui_LoginWindow(object):
         def cancel():
             self.add_window.close()
             self.show_table()
-            self.table.itemSelectionChanged.disconnect()
             self.table.itemSelectionChanged.connect(self.show_selected)
 
         #set fonstyle
@@ -521,6 +520,7 @@ class Ui_LoginWindow(object):
         self.cancel_btn.setStyleSheet("background-color: white;")
         self.cancel_btn.clicked.connect(cancel)
 
+        self.add_window.setWindowModality(Qt.ApplicationModal) # Prevents interact with the main Window unless closed
         self.add_window.show()
 
     def update_btn_clicked(self):
@@ -655,6 +655,7 @@ class Ui_LoginWindow(object):
         self.remarks_box.setText(self.selected_values["remarks"])
 
         self.table.itemSelectionChanged.connect(self.show_selected)
+        self.updt_window.setWindowModality(Qt.ApplicationModal)
         self.updt_window.show()
 
     def search_btn_clicked(self):
@@ -719,6 +720,7 @@ class Ui_LoginWindow(object):
 
                     # Update selection behavior
                     self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+                    self.search_window.close()
 
             except Exception as e:
 
@@ -829,6 +831,7 @@ class Ui_LoginWindow(object):
 
 
         self.table.itemSelectionChanged.connect(self.show_selected)
+        self.search_window.setWindowModality(Qt.ApplicationModal)  # Prevents interact with the main Window unless closed
         self.search_window.show()
 
     # Delete single row data
