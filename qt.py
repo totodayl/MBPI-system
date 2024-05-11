@@ -394,22 +394,32 @@ class Ui_LoginWindow(object):
     def add_btn_clicked(self):
         def click():
             try:
-                self.parse_inputs()
-                cursor.execute(f"""
-                            INSERT INTO tbl_maintenance (itemname, quantity, unit, model_name, remarks, date_encoded)
-                            VALUES ('{self.user_inputs["itemname"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', 
-                            '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}', '{self.formattedDateTime}')
+                self.parse_inputs()  # get the inputs from user
+                if self.user_inputs['itemname'] != '' and self.user_inputs['quantity'] != '':
+                    cursor.execute(f"""
+                                                                                    INSERT INTO tbl_maintenance (itemname, quantity, unit, model_name, remarks, date_encoded)
+                                                                                    VALUES ('{self.user_inputs["itemname"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', 
+                                                                                    '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}', '{self.formattedDateTime}')
 
-                            """)
-                print(self.formattedDateTime)
-                self.conn.commit()
-                self.add_window.close()
-                self.clear_inputs()
-                self.show_table()
-                self.table.itemSelectionChanged.connect(self.show_selected)
+                                                                                    """)
 
-            except psycopg2.Error as e:
-                print(e)
+                    self.conn.commit()
+                    self.add_window.close()
+                    self.clear_inputs()
+                    self.show_table()
+                    self.table.itemSelectionChanged.connect(self.show_selected)
+                else:
+                    QtWidgets.QMessageBox.information(self.add_window, "Invalid Entry",
+                                                      'Item Name and Quantity cant be Null and \n Quantity must be integer')
+
+
+
+
+
+            except psycopg2.Error:
+                QtWidgets.QMessageBox.information(self.add_window, "Invalid Entry",
+                                                  'Item Name and Quantity cant be Null and \n Quantity must be integer')
+                self.conn.rollback()
 
         def cancel():
             self.add_window.close()
@@ -532,6 +542,7 @@ class Ui_LoginWindow(object):
 
             except Exception as e:
                 print(e)
+                self.conn.rollback()
                 self.clear_inputs()
                 self.show_table()
 
