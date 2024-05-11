@@ -127,8 +127,16 @@ class Ui_LoginWindow(object):
         self.ctrlnum_label.setGeometry(90, 575, 200, 30)
         self.ctrlnum_label.setStyleSheet("background-color: rgb(0,109,184); color : white;")
         self.ctrlnum_label.setText("Control Number:")
-        self.ctrlnum_label.setFont(QtGui.QFont("Arial", 16))
+        self.ctrlnum_label.setFont(QtGui.QFont("Arial", 17))
         self.ctrlnum_label.show()
+
+        # Date Created Label
+        self.dateCreatedLabel = QtWidgets.QLabel(self.login_window)
+        self.dateCreatedLabel.setGeometry(750, 575, 160, 30)
+        self.dateCreatedLabel.setText("Date Created:")
+        self.dateCreatedLabel.setStyleSheet("background-color: rgb(0,109,184); color : white;")
+        self.dateCreatedLabel.setFont(QtGui.QFont("Arial", 17))
+        self.dateCreatedLabel.show()
 
         # User Icon
         self.user_icon = QtWidgets.QLabel(self.login_window)
@@ -304,6 +312,22 @@ class Ui_LoginWindow(object):
 
             # set stylesheet
             stylesheet = "color: rgb(0,255,0)"
+
+            # Control Number Label
+            self.ctrlnum_label = QtWidgets.QLabel(self.login_window)
+            self.ctrlnum_label.setGeometry(260, 575, 100, 30)
+            self.ctrlnum_label.setText(self.selected_values["ctrl_num"])
+            self.ctrlnum_label.setFont(QtGui.QFont("Arial", 17))
+            self.ctrlnum_label.setStyleSheet("background-color: rgb(0,109,184)")
+            self.ctrlnum_label.show()
+
+            # Date Created Label
+            self.dateCreatedLabel = QtWidgets.QLabel(self.login_window)
+            self.dateCreatedLabel.setGeometry(900, 575, 160, 30)
+            self.dateCreatedLabel.setText(self.selected_values["date_encoded"])
+            self.dateCreatedLabel.setFont(QtGui.QFont("Arial", 17))
+            self.dateCreatedLabel.setStyleSheet("background-color: rgb(0,109,184)")
+            self.dateCreatedLabel.show()
 
             # Username Label
             self.username_label = QtWidgets.QLabel(self.login_window)
@@ -537,8 +561,10 @@ class Ui_LoginWindow(object):
 
                     self.conn.commit()
                     self.updt_window.close()
+                    self.table.clearSelection()
                     self.clear_inputs()
                     self.show_table()
+                    self.table.itemSelectionChanged.connect(self.show_selected)
                 else:
                     QtWidgets.QMessageBox.information(self.updt_window, "Invalid Entry",
                                                       'Item Name and Quantity cant be Null and \n Quantity must be integer')
