@@ -410,11 +410,8 @@ class Ui_LoginWindow(object):
                     self.table.itemSelectionChanged.connect(self.show_selected)
                 else:
                     QtWidgets.QMessageBox.information(self.add_window, "Invalid Entry",
-                                                      'Item Name and Quantity cant be Null and \n Quantity must be integer')
-
-
-
-
+                                                      'Item Name and Quantity cant be Null and \n Quantity must be '
+                                                      'integer')
 
             except psycopg2.Error:
                 QtWidgets.QMessageBox.information(self.add_window, "Invalid Entry",
@@ -505,7 +502,7 @@ class Ui_LoginWindow(object):
         self.remarks_label.setGeometry(65, 360, 100, 18)
         self.remarks_label.setStyleSheet("color: black")
         self.remarks_label.setFont(lbl_font)
-        self.remarks_label.setText("Itemname")
+        self.remarks_label.setText("Remarks")
 
         # Add Button
         self.add_btn = QtWidgets.QPushButton(self.add_window)
@@ -526,25 +523,28 @@ class Ui_LoginWindow(object):
     def update_btn_clicked(self):
         def update():
             try:
-                self.parse_inputs()
-                cursor.execute(f"""UPDATE tbl_maintenance
-                                SET itemname = '{self.user_inputs["itemname"]}', quantity = {self.user_inputs["quantity"]}, 
-                                unit = '{self.user_inputs["unit"]}',model_name = '{self.user_inputs["model_name"]}',
-                                remarks = '{self.user_inputs["remarks"]}', last_updated = '{self.formattedDateTime}'
-                                WHERE control_num = {self.selected_values["ctrl_num"]}
-                                """)
+                self.parse_inputs()  # get the inputs from user
+                if self.user_inputs['itemname'] != '' and self.user_inputs['quantity'] != '':
+                    cursor.execute((f"""UPDATE tbl_maintenance
+                                        SET itemname = '{self.user_inputs["itemname"]}', quantity = {self.user_inputs["quantity"]}, 
+                                        unit = '{self.user_inputs["unit"]}', model_name = '{self.user_inputs["model_name"]}',
+                                        remarks = '{self.user_inputs["remarks"]}', last_updated = '{self.formattedDateTime}'
+                                        WHERE control_num = {self.selected_values["ctrl_num"]}
+                                """))
 
-                self.conn.commit()
-                self.updt_window.close()
-                self.clear_inputs()
-                self.show_table()
-                self.table.itemSelectionChanged.connect(self.show_selected)
+                    self.conn.commit()
+                    self.updt_window.close()
+                    self.clear_inputs()
+                    self.show_table()
+                else:
+                    QtWidgets.QMessageBox.information(self.updt_window, "Invalid Entry",
+                                                      'Item Name and Quantity cant be Null and \n Quantity must be integer')
+                    self.conn.rollback()
 
-            except Exception as e:
-                print(e)
+            except psycopg2.Error:
+                QtWidgets.QMessageBox.information(self.updt_window, "Invalid Entry",
+                                                  'Item Name and Quantity cant be Null and \n Quantity must be integer')
                 self.conn.rollback()
-                self.clear_inputs()
-                self.show_table()
 
         def cancel():
             self.updt_window.close()
@@ -628,7 +628,7 @@ class Ui_LoginWindow(object):
         self.remarks_label.setGeometry(65, 360, 100, 18)
         self.remarks_label.setStyleSheet("color: black")
         self.remarks_label.setFont(lbl_font)
-        self.remarks_label.setText("Itemname")
+        self.remarks_label.setText("Remarks")
 
         # Update Button
         self.update_btn = QtWidgets.QPushButton(self.updt_window)
