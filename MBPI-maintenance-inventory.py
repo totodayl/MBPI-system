@@ -225,7 +225,7 @@ class Ui_LoginWindow(object):
         self.filter_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
-        self.filter_btn_icon.clicked.connect(self.add_btn_clicked)
+        self.filter_btn_icon.clicked.connect(self.search_btn_clicked)
         self.filter_btn_icon.show()
 
         self.delete_btn_icon = ClickableLabel(self.login_window)
@@ -235,7 +235,7 @@ class Ui_LoginWindow(object):
         self.delete_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
-        self.delete_btn_icon.clicked.connect(self.add_btn_clicked)
+        self.delete_btn_icon.clicked.connect(self.delete_btn_clicked)
         self.delete_btn_icon.show()
 
     # getting the table dimension
@@ -400,9 +400,9 @@ class Ui_LoginWindow(object):
                 self.parse_inputs()  # get the inputs from user
                 if self.user_inputs['itemname'] != '' and self.user_inputs['quantity'] != '':
                     cursor.execute(f"""
-                                                                                    INSERT INTO tbl_maintenance (itemname, quantity, unit, model_name, remarks, date_encoded)
-                                                                                    VALUES ('{self.user_inputs["itemname"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', 
-                                                                                    '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}', '{self.formattedDateTime}')
+                        INSERT INTO tbl_maintenance (itemname, quantity, unit, model_name, remarks, date_encoded)
+                        VALUES ('{self.user_inputs["itemname"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', 
+                        '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}', '{self.formattedDateTime}')
 
                                                                                     """)
 
@@ -658,81 +658,183 @@ class Ui_LoginWindow(object):
         self.updt_window.show()
 
     def search_btn_clicked(self):
-        try:
-            self.parse_inputs()
-            # Create a list of tuple condition query
-            querycon_list = []
-            for i, j in self.user_inputs.items():
-                if j == "":
-                    pass
-                else:
-                    querycon_list.append((i, j))
+        def click():
+            try:
+                self.parse_inputs()
+                # Create a list of tuple condition query
 
-            query_con = ""
-
-            for items in querycon_list:
-                if len(querycon_list) > 1:
-                    if items[0] == "itemname" or items != querycon_list[-1]:
-                        query_con = (query_con + items[0] + " ILIKE" + " '%" + items[1] + "%'" +
-                                     " AND ")
-                    elif items == querycon_list[-1]:
-                        query_con = query_con + items[0] + " = " + "'" + items[1] + "'"
+                querycon_list = []
+                for i, j in self.user_inputs.items():
+                    if j == "":
+                        pass
                     else:
-                        query_con = query_con + items[0] + " = " + "'" + items[1] + "'" + " AND "
+                        querycon_list.append((i, j))
 
-                else:
-                    if items[0] == "itemname":
-                        query_con = (query_con + items[0] + " ILIKE" + " '%" + items[1] + "%'")
+                query_con = ""
+
+                for items in querycon_list:
+                    if len(querycon_list) > 1:
+                        if items[0] == "itemname" or items != querycon_list[-1]:
+                            query_con = (query_con + items[0] + " ILIKE" + " '%" + items[1] + "%'" +
+                                         " AND ")
+                        elif items == querycon_list[-1]:
+                            query_con = query_con + items[0] + " = " + "'" + items[1] + "'"
+                        else:
+                            query_con = query_con + items[0] + " = " + "'" + items[1] + "'" + " AND "
+
                     else:
-                        query_con = query_con + items[0] + " = " + "'" + items[1] + "'"
+                        if items[0] == "itemname":
+                            query_con = (query_con + items[0] + " ILIKE" + " '%" + items[1] + "%'")
+                        else:
+                            query_con = query_con + items[0] + " = " + "'" + items[1] + "'"
 
-            print(query_con)
 
-            cursor.execute(f"""
-            SELECT * FROM tbl_maintenance
-            WHERE {query_con}
-            """)
+                cursor.execute(f"""
+                SELECT * FROM tbl_maintenance
+                WHERE {query_con} AND deleted = 'False'
+                """)
 
-            # Fetch search results
-            search_results = cursor.fetchall()
+                # Fetch search results
+                search_results = cursor.fetchall()
 
-            # Clear table widget
-            self.table.clearContents()
+                # Clear table widget
+                self.table.clearContents()
 
-            if not search_results:
-                # If no results found, inform the user
-                QtWidgets.QMessageBox.information(self.login_window, "No Results",
-                                                  "No items found matching the search criteria.")
+                if not search_results:
+                    # If no results found, inform the user
+                    QtWidgets.QMessageBox.information(self.login_window, "No Results",
+                                                      "No items found matching the search criteria.")
+                    self.show_table()
+                    self.table.itemSelectionChanged.connect(self.show_selected)
+                else:
+                    # Update table with search results
+                    self.rows = len(search_results)
+                    self.columns = len(search_results[0])
+                    self.table.setRowCount(self.rows)
+                    self.table.setColumnCount(self.columns)
+                    for i in range(self.rows):
+                        for j in range(self.columns):
+                            item = QtWidgets.QTableWidgetItem(str(search_results[i][j]))
+                            self.table.setItem(i, j, item)
+
+                    # Update selection behavior
+                    self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+
+            except Exception as e:
+
+                # Handle the error, e.g., inform the user or log the error
+                print(e)
+                QtWidgets.QMessageBox.critical(self.login_window, "No Results",
+                                               f"No items found matching the search criteria.")
+                self.conn.rollback()
                 self.show_table()
-                self.table.itemSelectionChanged.connect(self.show_selected)
-            else:
-                # Update table with search results
-                self.rows = len(search_results)
-                self.columns = len(search_results[0])
-                self.table.setRowCount(self.rows)
-                self.table.setColumnCount(self.columns)
-                for i in range(self.rows):
-                    for j in range(self.columns):
-                        item = QtWidgets.QTableWidgetItem(str(search_results[i][j]))
-                        self.table.setItem(i, j, item)
-
-                # Update selection behavior
-                self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-
-        except Exception as e:
-
-            # Handle the error, e.g., inform the user or log the error
-            print(e)
-            QtWidgets.QMessageBox.critical(self.login_window, "No Results",
-                                           f"No items found matching the search criteria.")
-            self.conn.rollback()
+        def cancel():
+            self.search_window.close()
             self.show_table()
+            self.table.itemSelectionChanged.connect(self.show_selected)
+
+        lbl_font = QtGui.QFont("Arial", 11)
+        lbl_font.setBold(True)
+
+        # Create a new window for updating data
+        self.search_window = QtWidgets.QWidget()
+        self.search_window.setWindowTitle("Update Data")
+        self.search_window.setStyleSheet("background-color : rgba(30,131,177,255)")
+        self.search_window.setGeometry(750, 420, 500, 400)
+        self.search_window.setFixedSize(450, 500)
+
+        # Itemname Box
+        self.itemname_box = QtWidgets.QLineEdit(self.search_window)
+        self.itemname_box.setGeometry(60, 130, 330, 30)
+        self.itemname_box.setFont(QtGui.QFont("Arial", 11))
+        self.itemname_box.setStyleSheet("background-color: white; border-radius: 10px;")
+        self.itemname_box.setAlignment(Qt.AlignCenter)
+
+        # Itemname Label
+        self.itemname_label = QtWidgets.QLabel(self.search_window)
+        self.itemname_label.setGeometry(65, 168, 100, 18)
+        self.itemname_label.setStyleSheet("color: black")
+        self.itemname_label.setFont(lbl_font)
+        self.itemname_label.setText("Itemname")
+
+        # Quantity Box
+        self.quantity_box = QtWidgets.QLineEdit(self.search_window)
+        self.quantity_box.setGeometry(60, 190, 100, 30)
+        self.quantity_box.setFont(QtGui.QFont("Arial", 11))
+        self.quantity_box.setStyleSheet("background-color: white; border-radius: 10px;")
+        self.quantity_box.setAlignment(Qt.AlignCenter)
+
+        # Quantity Label
+        self.quantity_label = QtWidgets.QLabel(self.search_window)
+        self.quantity_label.setGeometry(65, 223, 100, 18)
+        self.quantity_label.setStyleSheet("color: black")
+        self.quantity_label.setFont(lbl_font)
+        self.quantity_label.setText("Quantity")
+
+        # Unit Box
+        self.unit_box = QtWidgets.QLineEdit(self.search_window)
+        self.unit_box.setGeometry(290, 190, 100, 30)
+        self.unit_box.setFont(lbl_font)
+        self.unit_box.setStyleSheet("background-color: white; border-radius: 10px;")
+        self.unit_box.setAlignment(Qt.AlignCenter)
+
+        # Unit Label
+        self.unit_label = QtWidgets.QLabel(self.search_window)
+        self.unit_label.setGeometry(320, 223, 100, 18)
+        self.unit_label.setStyleSheet("color: black")
+        self.unit_label.setFont(lbl_font)
+        self.unit_label.setText("Unit")
+
+        # Model box
+        self.model_box = QtWidgets.QLineEdit(self.search_window)
+        self.model_box.setGeometry(60, 260, 230, 30)
+        self.model_box.setFont(QtGui.QFont("Arial", 11))
+        self.model_box.setStyleSheet("background-color: white; border-radius: 10px;")
+        self.model_box.setAlignment(Qt.AlignCenter)
+
+        # Model Label
+        self.model_label = QtWidgets.QLabel(self.search_window)
+        self.model_label.setGeometry(65, 293, 100, 18)
+        self.model_label.setStyleSheet("color: black")
+        self.model_label.setFont(lbl_font)
+        self.model_label.setText("Model")
+
+        # Remarks Box
+        self.remarks_box = QtWidgets.QLineEdit(self.search_window)
+        self.remarks_box.setGeometry(60, 330, 200, 30)
+        self.remarks_box.setFont(QtGui.QFont("Arial", 11))
+        self.remarks_box.setStyleSheet("background-color: white; border-radius: 10px;")
+
+        # Remarks Label
+        self.remarks_label = QtWidgets.QLabel(self.search_window)
+        self.remarks_label.setGeometry(65, 360, 100, 18)
+        self.remarks_label.setStyleSheet("color: black")
+        self.remarks_label.setFont(lbl_font)
+        self.remarks_label.setText("Remarks")
+
+        # Update Button
+        self.update_btn = QtWidgets.QPushButton(self.search_window)
+        self.update_btn.setGeometry(100, 420, 100, 30)
+        self.update_btn.setText("Update")
+        self.update_btn.setStyleSheet("background-color: white;")
+        self.update_btn.clicked.connect(click)
+
+        # cancel button
+        self.cancel_btn = QtWidgets.QPushButton(self.search_window)
+        self.cancel_btn.setGeometry(270, 420, 100, 30)
+        self.cancel_btn.setText("Cancel")
+        self.cancel_btn.setStyleSheet("background-color: white;")
+        self.cancel_btn.clicked.connect(cancel)
+
+
+
+        self.table.itemSelectionChanged.connect(self.show_selected)
+        self.search_window.show()
 
     # Delete single row data
     def delete_btn_clicked(self):
 
         try:
-            self.parse_inputs()
             cursor.execute(f"""
             UPDATE tbl_maintenance
             SET deleted = 'True'
@@ -740,7 +842,6 @@ class Ui_LoginWindow(object):
 
             """)
             self.conn.commit()
-            self.clear_inputs()
             self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
 
