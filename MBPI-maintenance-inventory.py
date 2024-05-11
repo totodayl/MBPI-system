@@ -302,6 +302,9 @@ class Ui_LoginWindow(object):
             font = QtGui.QFont("Arial", 15)
             font.setBold(True)
 
+            # set stylesheet
+            stylesheet = "color: rgb(0,255,0)"
+
             # Username Label
             self.username_label = QtWidgets.QLabel(self.login_window)
             self.username_label.setGeometry(100, 770, 180, 30)
@@ -314,7 +317,7 @@ class Ui_LoginWindow(object):
             self.itemname_label = QtWidgets.QLabel(self.login_window)
             self.itemname_label.setGeometry(450, 635, 260, 30)
             self.itemname_label.setText(self.selected_values["itemname"])
-            self.itemname_label.setStyleSheet("color: brown")
+            self.itemname_label.setStyleSheet(stylesheet)
             self.itemname_label.setFont(font)
             self.itemname_label.show()
 
@@ -322,7 +325,7 @@ class Ui_LoginWindow(object):
             self.model_label = QtWidgets.QLabel(self.login_window)
             self.model_label.setGeometry(460, 700, 230, 30)
             self.model_label.setText(self.selected_values["model_name"])
-            self.model_label.setStyleSheet("color: brown")
+            self.model_label.setStyleSheet(stylesheet)
             self.model_label.setFont(font)
             self.model_label.show()
 
@@ -330,14 +333,14 @@ class Ui_LoginWindow(object):
             self.remarks_label = QtWidgets.QLabel(self.login_window)
             self.remarks_label.setGeometry(440, 765, 260, 30)
             self.remarks_label.setText(self.selected_values["remarks"])
-            self.remarks_label.setStyleSheet("color: brown")
+            self.remarks_label.setStyleSheet(stylesheet)
             self.remarks_label.setFont(font)
             self.remarks_label.show()
 
             # Quantity Label
             self.quantity_label = QtWidgets.QLabel(self.login_window)
             self.quantity_label.setGeometry(815, 635, 115, 30)
-            self.quantity_label.setStyleSheet("color : brown")
+            self.quantity_label.setStyleSheet(stylesheet)
             self.quantity_label.setFont(font)
             self.quantity_label.setText(self.selected_values["quantity"])
             self.quantity_label.show()
@@ -345,7 +348,7 @@ class Ui_LoginWindow(object):
             # Unit Label
             self.unit_label = QtWidgets.QLabel(self.login_window)
             self.unit_label.setGeometry(990, 635, 115, 30)
-            self.unit_label.setStyleSheet("color : brown")
+            self.unit_label.setStyleSheet(stylesheet)
             self.unit_label.setFont(font)
             self.unit_label.setText(self.selected_values["unit"])
             self.unit_label.show()
@@ -353,7 +356,7 @@ class Ui_LoginWindow(object):
             # UpdatedBy Label
             self.updatedby_label = QtWidgets.QLabel(self.login_window)
             self.updatedby_label.setGeometry(850, 700, 115, 30)
-            self.updatedby_label.setStyleSheet("color : brown")
+            self.updatedby_label.setStyleSheet(stylesheet)
             self.updatedby_label.setFont(font)
             self.updatedby_label.setText(self.selected_values["updated_by"])
             self.updatedby_label.show()
@@ -361,7 +364,7 @@ class Ui_LoginWindow(object):
             # Updated Date Label
             self.updatedDate_label = QtWidgets.QLabel(self.login_window)
             self.updatedDate_label.setGeometry(850, 765, 215, 30)
-            self.updatedDate_label.setStyleSheet("color : brown")
+            self.updatedDate_label.setStyleSheet("color: rgb(0,255,0)")
             self.updatedDate_label.setFont(font)
             self.updatedDate_label.setText(self.selected_values["last_updated"])
             self.updatedDate_label.show()
