@@ -738,7 +738,7 @@ class Ui_LoginWindow(object):
 
         # Create a new window for updating data
         self.search_window = QtWidgets.QWidget()
-        self.search_window.setWindowTitle("Update Data")
+        self.search_window.setWindowTitle("Filter Data")
         self.search_window.setStyleSheet("background-color : rgba(30,131,177,255)")
         self.search_window.setGeometry(750, 420, 500, 400)
         self.search_window.setFixedSize(450, 500)
@@ -815,7 +815,7 @@ class Ui_LoginWindow(object):
         # Update Button
         self.update_btn = QtWidgets.QPushButton(self.search_window)
         self.update_btn.setGeometry(100, 420, 100, 30)
-        self.update_btn.setText("Update")
+        self.update_btn.setText("Filter")
         self.update_btn.setStyleSheet("background-color: white;")
         self.update_btn.clicked.connect(click)
 
