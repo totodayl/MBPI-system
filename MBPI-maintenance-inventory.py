@@ -256,7 +256,9 @@ class Ui_LoginWindow(object):
         self.delete_btn_icon.show()
 
     # getting the table dimension
-    def get_table(self, query="SELECT * FROM tbl_maintenance WHERE deleted = 'False' ORDER BY control_num DESC"):
+    def get_table(self, query="""SELECT control_num, itemname, quantity, unit, model_name, remarks, encoded_by,
+                                date_encoded, updated_by, last_updated  
+                                FROM tbl_maintenance WHERE deleted = 'False' ORDER BY control_num DESC"""):
         cursor.execute(query)
         result = cursor.fetchall()
         return result
@@ -287,13 +289,16 @@ class Ui_LoginWindow(object):
         query_result = self.get_table()
         cursor.execute(
             "SELECT column_name FROM information_schema.columns WHERE table_name = 'tbl_maintenance';")  # query for getting the table names
-        column_names = ['control_num', 'itemname', 'quantity', 'unit', 'model_name', 'remarks', "deleted", 'encoded_by',
+        column_names = ['control_num', 'itemname', 'quantity', 'unit', 'model_name', 'remarks', 'encoded_by',
                         'date_encoded', 'updated_by', 'last_updated']
         self.rows = len(query_result)
         self.columns = len(query_result[0])
 
+
+
         self.table.setColumnCount(self.columns)  # Set number of columns
         self.table.setRowCount(self.rows)  # Set number of rows
+
 
         # Populate table with data
         for i in range(self.rows):
@@ -320,10 +325,10 @@ class Ui_LoginWindow(object):
                 "unit": items[3].strip(),
                 "model_name": items[4].strip(),
                 "remarks": items[5].strip(),
-                "encoded_by": items[7].strip(),
-                "date_encoded": items[8].strip(),
-                "updated_by": items[9].strip(),
-                "last_updated": items[10].strip()
+                "encoded_by": items[6].strip(),
+                "date_encoded": items[7].strip(),
+                "updated_by": items[8].strip(),
+                "last_updated": items[9].strip()
 
             }
             # show the selected values in the UI
@@ -789,15 +794,16 @@ class Ui_LoginWindow(object):
                     # Update selection behavior
                     self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
                     self.search_window.close()
+                    self.table.itemSelectionChanged.connect(self.show_selected)
 
             except Exception as e:
-
                 # Handle the error, e.g., inform the user or log the error
                 print(e)
-                QtWidgets.QMessageBox.critical(self.login_window, "No Results",
+                QtWidgets.QMessageBox.critical(self.login_window, "Non Results",
                                                f"No items found matching the search criteria.")
                 self.conn.rollback()
                 self.show_table()
+                self.table.itemSelectionChanged.connect(self.show_selected)
         def cancel():
             self.search_window.close()
             self.show_table()
