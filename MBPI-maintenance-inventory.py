@@ -50,9 +50,7 @@ class Ui_LoginWindow(object):
         self.statusbar = QtWidgets.QStatusBar(LoginWindow)
         self.statusbar.setObjectName("statusbar")
         LoginWindow.setStatusBar(self.statusbar)
-        self.toolBar = QtWidgets.QToolBar(LoginWindow)
-        self.toolBar.setObjectName("toolBar")
-        LoginWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+
 
         self.retranslateUi(LoginWindow)
         QtCore.QMetaObject.connectSlotsByName(LoginWindow)
@@ -61,7 +59,7 @@ class Ui_LoginWindow(object):
         _translate = QtCore.QCoreApplication.translate
         LoginWindow.setWindowTitle(_translate("LoginWindow", "MBPI"))
         self.login_btn.setText(_translate("LoginWindow", "Login"))
-        self.toolBar.setWindowTitle(_translate("LoginWindow", "toolBar"))
+
 
     def login(self):
         username = self.username.text()
@@ -208,7 +206,7 @@ class Ui_LoginWindow(object):
         # Add Entry Button
         self.add_btn_icon = ClickableLabel(self.login_window)
         self.add_btn_icon.setGeometry(1125, 100, 50, 50)  # Set size and position
-        self.add_btn_icon.setPixmap(QtGui.QIcon('add.png').pixmap(50, 50))  # Set icon
+        self.add_btn_icon.setPixmap(QtGui.QIcon('addv2.png').pixmap(50, 50))  # Set icon
         self.add_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.add_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
 
@@ -260,8 +258,19 @@ class Ui_LoginWindow(object):
         # Set table size
         self.table.setGeometry(QtCore.QRect(100, 50, 1000, 450))
         self.table.setObjectName("table")
-        self.table.setStyleSheet("background-color: white;")
-        self.table.verticalHeader().setVisible(False)
+        self.table.setStyleSheet("background-color: rgb(0,109,189); "
+                                 "gridline-color: 2px solid black ;"
+                                 "border :  solid black;"
+                                 "color: white;"
+                                 "selection-color: red;"
+                                 "selection-background-color: white;")
+        self.table.verticalHeader().setVisible(False) # remove the unnecessary indexes
+        self.table.horizontalHeader().setStyleSheet("QHeaderView::section {"
+                             "background-color: black;"
+                             "color: white;"
+                             "font-weight: bold;"
+                             "border: 1px solid black;"
+                             "}")
 
         # Fetch table data and column names
         query_result = self.get_table()
@@ -279,10 +288,12 @@ class Ui_LoginWindow(object):
         for i in range(self.rows):
             for j in range(self.columns):
                 item = QtWidgets.QTableWidgetItem(str(query_result[i][j]))  # Convert to string
+                item.setFlags(item.flags() & ~Qt.ItemIsEditable)  # Make the cells unable to be edited
                 self.table.setItem(i, j, item)
 
         self.table.setHorizontalHeaderLabels([col.upper() for col in column_names])  # Set column names
         self.table.show()
+        self.table.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
     # Show selected row to the Information Box below
@@ -537,12 +548,15 @@ class Ui_LoginWindow(object):
         self.add_btn.setStyleSheet("background-color: white;")
         self.add_btn.clicked.connect(click)
 
+
         # cancel button
         self.cancel_btn = QtWidgets.QPushButton(self.add_window)
         self.cancel_btn.setGeometry(270, 420, 100, 30)
         self.cancel_btn.setText("Cancel")
         self.cancel_btn.setStyleSheet("background-color: white;")
         self.cancel_btn.clicked.connect(cancel)
+
+
 
         self.add_window.setWindowModality(Qt.ApplicationModal) # Prevents interact with the main Window unless closed
         self.add_window.show()
