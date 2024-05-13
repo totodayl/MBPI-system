@@ -1,8 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, pyqtSignal
 import psycopg2
-import pandas as pd
-import datetime as dt
+
 
 
 # Used for icons to be Clickable
@@ -203,9 +202,20 @@ class Ui_LoginWindow(object):
         self.timer.timeout.connect(self.updateDateTime)
         self.timer.start(1000)
 
+        # Home Button refreshes the table
+        self.home_btn_icon = ClickableLabel(self.login_window)
+        self.home_btn_icon.setGeometry(1125, 100, 50, 50)  # Set size and position
+        self.home_btn_icon.setPixmap(QtGui.QIcon('home_icon.png').pixmap(50, 50))  # Set icon
+        self.home_btn_icon.setScaledContents(True)  # Scale icon to fit the label
+        self.home_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+
+        # Connect the clicked signal of the QLabel to the on_icon_clicked slot
+        self.home_btn_icon.clicked.connect(self.show_table)
+        self.home_btn_icon.show()
+
         # Add Entry Button
         self.add_btn_icon = ClickableLabel(self.login_window)
-        self.add_btn_icon.setGeometry(1125, 100, 50, 50)  # Set size and position
+        self.add_btn_icon.setGeometry(1125, 175, 50, 50)  # Set size and position
         self.add_btn_icon.setPixmap(QtGui.QIcon('addv2.png').pixmap(50, 50))  # Set icon
         self.add_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.add_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
@@ -214,8 +224,9 @@ class Ui_LoginWindow(object):
         self.add_btn_icon.clicked.connect(self.add_btn_clicked)
         self.add_btn_icon.show()
 
+        # Update Entry Button
         self.update_btn_icon = ClickableLabel(self.login_window)
-        self.update_btn_icon.setGeometry(1125, 175, 50, 50)  # Set size and position
+        self.update_btn_icon.setGeometry(1125, 250, 50, 50)  # Set size and position
         self.update_btn_icon.setPixmap(QtGui.QIcon('update.png').pixmap(50, 50))  # Set icon
         self.update_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.update_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
@@ -225,7 +236,7 @@ class Ui_LoginWindow(object):
         self.update_btn_icon.show()
 
         self.filter_btn_icon = ClickableLabel(self.login_window)
-        self.filter_btn_icon.setGeometry(1125, 250, 50, 50)  # Set size and position
+        self.filter_btn_icon.setGeometry(1125, 325, 50, 50)  # Set size and position
         self.filter_btn_icon.setPixmap(QtGui.QIcon('filter.png').pixmap(50, 50))  # Set icon
         self.filter_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.filter_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
@@ -235,7 +246,7 @@ class Ui_LoginWindow(object):
         self.filter_btn_icon.show()
 
         self.delete_btn_icon = ClickableLabel(self.login_window)
-        self.delete_btn_icon.setGeometry(1125, 325, 50, 50)  # Set size and position
+        self.delete_btn_icon.setGeometry(1125, 400, 50, 50)  # Set size and position
         self.delete_btn_icon.setPixmap(QtGui.QIcon('delete2.png').pixmap(50, 50))  # Set icon
         self.delete_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.delete_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
@@ -410,13 +421,22 @@ class Ui_LoginWindow(object):
     def parse_inputs(self):
 
         # Set to None as default if no inputs found
-        self.user_inputs = {
-            "itemname": self.itemname_box.text().strip(),
-            "quantity": self.quantity_box.text().strip(),
-            "unit": self.unit_box.text().strip(),
-            "model_name": self.model_box.text().strip(),
-            "remarks": self.remarks_box.text().strip()
-        }
+        try:
+            self.user_inputs = {
+                "itemname": self.itemname_box.currentText(),
+                "quantity": self.quantity_box.text().strip(),
+                "unit": self.unit_box.text().strip(),
+                "model_name": self.model_box.text().strip(),
+                "remarks": self.remarks_box.text().strip()
+            }
+        except:
+            self.user_inputs = {
+                "itemname": self.itemname_box.text().strip(),
+                "quantity": self.quantity_box.text().strip(),
+                "unit": self.unit_box.text().strip(),
+                "model_name": self.model_box.text().strip(),
+                "remarks": self.remarks_box.text().strip()
+            }
 
     def clear_inputs(self):
         self.itemname_box.clear()
@@ -465,6 +485,8 @@ class Ui_LoginWindow(object):
         lbl_font = QtGui.QFont("Arial", 11)
         lbl_font.setBold(True)
 
+
+
         # Create new Entry Window
         self.add_window = QtWidgets.QWidget()
         self.add_window.setWindowTitle("ADD Data")
@@ -472,12 +494,18 @@ class Ui_LoginWindow(object):
         self.add_window.setGeometry(750, 420, 500, 400)
         self.add_window.setFixedSize(450, 500)
 
-        # Itemname Box
-        self.itemname_box = QtWidgets.QLineEdit(self.add_window)
-        self.itemname_box.setGeometry(60, 130, 330, 30)
-        self.itemname_box.setFont(QtGui.QFont("Arial", 11))
-        self.itemname_box.setStyleSheet("background-color: white; border-radius: 10px;")
-        self.itemname_box.setAlignment(Qt.AlignCenter)
+        self.itemname_box = QtWidgets.QComboBox(self.add_window)
+        cursor.execute("SELECT DISTINCT(itemname) FROM tbl_maintenance;")
+        self.item_list = cursor.fetchall()
+        for i in self.item_list:
+            self.itemname_box.addItem(i[0])
+        self.itemname_box.setEditable(True)
+        self.itemname_box.setGeometry(60, 120, 300, 30)
+        self.itemname_box.setFont(QtGui.QFont("Arial", 13))
+        self.itemname_box.setStyleSheet("background-color: white; top-left-border-radius: 10px;")
+        self.itemname_box.show()
+
+
 
         # Itemname Label
         self.itemname_label = QtWidgets.QLabel(self.add_window)
