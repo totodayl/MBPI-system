@@ -81,12 +81,10 @@ class Ui_LoginWindow(object):
     # This is the main window after login screen
     def launch_main(self):
         # Delete widgets
-        try:
-            self.username.deleteLater()
-            self.password.deleteLater()
-            self.login_btn.deleteLater()
-        except:
-            pass
+        self.username.deleteLater()
+        self.password.deleteLater()
+        self.login_btn.deleteLater()
+
         self.login_window.setStyleSheet("background-color: white")
         # Setting the size and position of the main window
         LoginWindow.setFixedSize(1200, 900)  # fixed size
@@ -216,7 +214,7 @@ class Ui_LoginWindow(object):
         # Add Entry Button
         self.add_btn_icon = ClickableLabel(self.login_window)
         self.add_btn_icon.setGeometry(1125, 175, 50, 50)  # Set size and position
-        self.add_btn_icon.setPixmap(QtGui.QIcon('addv2.png').pixmap(50, 50))  # Set icon
+        self.add_btn_icon.setPixmap(QtGui.QIcon('add.png').pixmap(50, 50))  # Set icon
         self.add_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.add_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
 
