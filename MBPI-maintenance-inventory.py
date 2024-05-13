@@ -515,7 +515,7 @@ class Ui_LoginWindow(object):
 
         # Itemname Label
         self.itemname_label = QtWidgets.QLabel(self.add_window)
-        self.itemname_label.setGeometry(65, 148, 100, 18)
+        self.itemname_label.setGeometry(65, 133, 100, 18)
         self.itemname_label.setStyleSheet("color: black")
         self.itemname_label.setFont(lbl_font)
         self.itemname_label.setText("Itemname")
