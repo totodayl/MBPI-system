@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, pyqtSignal
 import psycopg2
+import db_connections as dbcon
 
 
 
@@ -66,11 +67,11 @@ class Ui_LoginWindow(object):
 
         try:
             self.conn = psycopg2.connect(
-                host='192.168.1.13',
-                port=5432,
-                dbname="MBPI",
-                user="postgres",
-                password="mbpi")
+                host=dbcon.host,
+                port=dbcon.port,
+                dbname=dbcon.dbname,
+                user=dbcon.user,
+                password=dbcon.password)
             global cursor
             cursor = self.conn.cursor()
             print("Connected Successfully")
