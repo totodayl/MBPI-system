@@ -26,14 +26,12 @@ class Ui_LoginWindow(object):
         self.username.setAutoFillBackground(False)
         self.username.setStyleSheet("background-color: rgb(255, 255, 255); border-radius: 5px")
         self.username.setObjectName("username")
-        self.username.setText("postgres")
         self.password = QtWidgets.QLineEdit(self.login_window)
         self.password.setGeometry(QtCore.QRect(310, 230, 171, 31))
         self.password.setAutoFillBackground(False)
         self.password.setStyleSheet("background-color: rgb(255, 255, 255); border-radius: 5px")
         self.password.setObjectName("password")
         self.password.setEchoMode(QtWidgets.QLineEdit.Password)
-        self.password.setText("mbpi")
         self.login_btn = QtWidgets.QPushButton(self.login_window)
         self.login_btn.setGeometry(QtCore.QRect(360, 340, 75, 23))
         self.login_btn.setStyleSheet("\n"
@@ -63,7 +61,7 @@ class Ui_LoginWindow(object):
 
     def login(self):
         username = self.username.text()
-        pass1 = self.password.text()
+        pword = self.password.text()
 
         try:
             self.conn = psycopg2.connect(
@@ -72,10 +70,22 @@ class Ui_LoginWindow(object):
                 dbname=dbcon.dbname,
                 user=dbcon.user,
                 password=dbcon.password)
+
             global cursor
             cursor = self.conn.cursor()
-            print("Connected Successfully")
-            self.launch_main()
+            cursor.execute(f"""
+            SELECT * FROM users
+            WHERE username = '{username}' AND password = '{pword}' 
+            """)
+            if len(cursor.fetchall()) == 1:
+                print("Connected Successfully")
+                self.launch_main()
+
+            else:
+                QtWidgets.QMessageBox.critical(self.login_window, "Invalid Credentials", "Username and Password doesnt match.")
+
+
+
         except Exception as e:
             print("Invalid Credentials:", e)
 
