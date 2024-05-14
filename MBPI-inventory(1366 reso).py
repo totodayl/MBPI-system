@@ -478,7 +478,7 @@ class Ui_LoginWindow(object):
         def click():
             try:
                 self.parse_inputs()  # get the inputs from user
-                if self.user_inputs['itemname'] != '' and self.user_inputs['quantity'] != '':
+                if self.user_inputs['itemname'].strip() != '' and self.user_inputs['quantity'] != '':
                     cursor.execute(f"""
                         INSERT INTO tbl_maintenance (itemname, quantity, unit, model_name, remarks, date_encoded)
                         VALUES ('{self.user_inputs["itemname"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', 
@@ -648,109 +648,112 @@ class Ui_LoginWindow(object):
             self.show_table()
             self.table.itemSelectionChanged.connect(self.show_selected)
 
-        lbl_font = QtGui.QFont("Arial", 11)
-        lbl_font.setBold(True)
+        try:
+            lbl_font = QtGui.QFont("Arial", 11)
+            lbl_font.setBold(True)
 
-        # Create a new window for updating data
-        self.updt_window = QtWidgets.QWidget()
-        self.updt_window.setWindowTitle("Update Data")
-        self.updt_window.setStyleSheet("background-color : rgba(30,131,177,255)")
-        self.updt_window.setGeometry(450, 150, 500, 400)
-        self.updt_window.setFixedSize(450, 500)
+            # Create a new window for updating data
+            self.updt_window = QtWidgets.QWidget()
+            self.updt_window.setWindowTitle("Update Data")
+            self.updt_window.setStyleSheet("background-color : rgba(30,131,177,255)")
+            self.updt_window.setGeometry(450, 150, 500, 400)
+            self.updt_window.setFixedSize(450, 500)
 
-        # Itemname Box
-        self.itemname_box = QtWidgets.QLineEdit(self.updt_window)
-        self.itemname_box.setGeometry(60, 130, 330, 30)
-        self.itemname_box.setFont(QtGui.QFont("Arial", 11))
-        self.itemname_box.setStyleSheet("background-color: white; border-radius: 10px;")
-        self.itemname_box.setAlignment(Qt.AlignCenter)
+            # Itemname Box
+            self.itemname_box = QtWidgets.QLineEdit(self.updt_window)
+            self.itemname_box.setGeometry(60, 130, 330, 30)
+            self.itemname_box.setFont(QtGui.QFont("Arial", 11))
+            self.itemname_box.setStyleSheet("background-color: white; border-radius: 10px;")
+            self.itemname_box.setAlignment(Qt.AlignCenter)
 
-        # Itemname Label
-        self.itemname_label = QtWidgets.QLabel(self.updt_window)
-        self.itemname_label.setGeometry(65, 168, 100, 18)
-        self.itemname_label.setStyleSheet("color: black")
-        self.itemname_label.setFont(lbl_font)
-        self.itemname_label.setText("Itemname")
+            # Itemname Label
+            self.itemname_label = QtWidgets.QLabel(self.updt_window)
+            self.itemname_label.setGeometry(65, 168, 100, 18)
+            self.itemname_label.setStyleSheet("color: black")
+            self.itemname_label.setFont(lbl_font)
+            self.itemname_label.setText("Itemname")
 
-        # Quantity Box
-        self.quantity_box = QtWidgets.QLineEdit(self.updt_window)
-        self.quantity_box.setGeometry(60, 190, 100, 30)
-        self.quantity_box.setFont(QtGui.QFont("Arial", 11))
-        self.quantity_box.setStyleSheet("background-color: white; border-radius: 10px;")
-        self.quantity_box.setAlignment(Qt.AlignCenter)
+            # Quantity Box
+            self.quantity_box = QtWidgets.QLineEdit(self.updt_window)
+            self.quantity_box.setGeometry(60, 190, 100, 30)
+            self.quantity_box.setFont(QtGui.QFont("Arial", 11))
+            self.quantity_box.setStyleSheet("background-color: white; border-radius: 10px;")
+            self.quantity_box.setAlignment(Qt.AlignCenter)
 
-        # Quantity Label
-        self.quantity_label = QtWidgets.QLabel(self.updt_window)
-        self.quantity_label.setGeometry(65, 223, 100, 18)
-        self.quantity_label.setStyleSheet("color: black")
-        self.quantity_label.setFont(lbl_font)
-        self.quantity_label.setText("Quantity")
+            # Quantity Label
+            self.quantity_label = QtWidgets.QLabel(self.updt_window)
+            self.quantity_label.setGeometry(65, 223, 100, 18)
+            self.quantity_label.setStyleSheet("color: black")
+            self.quantity_label.setFont(lbl_font)
+            self.quantity_label.setText("Quantity")
 
-        # Unit Box
-        self.unit_box = QtWidgets.QLineEdit(self.updt_window)
-        self.unit_box.setGeometry(290, 190, 100, 30)
-        self.unit_box.setFont(lbl_font)
-        self.unit_box.setStyleSheet("background-color: white; border-radius: 10px;")
-        self.unit_box.setAlignment(Qt.AlignCenter)
+            # Unit Box
+            self.unit_box = QtWidgets.QLineEdit(self.updt_window)
+            self.unit_box.setGeometry(290, 190, 100, 30)
+            self.unit_box.setFont(lbl_font)
+            self.unit_box.setStyleSheet("background-color: white; border-radius: 10px;")
+            self.unit_box.setAlignment(Qt.AlignCenter)
 
-        # Unit Label
-        self.unit_label = QtWidgets.QLabel(self.updt_window)
-        self.unit_label.setGeometry(320, 223, 100, 18)
-        self.unit_label.setStyleSheet("color: black")
-        self.unit_label.setFont(lbl_font)
-        self.unit_label.setText("Unit")
+            # Unit Label
+            self.unit_label = QtWidgets.QLabel(self.updt_window)
+            self.unit_label.setGeometry(320, 223, 100, 18)
+            self.unit_label.setStyleSheet("color: black")
+            self.unit_label.setFont(lbl_font)
+            self.unit_label.setText("Unit")
 
-        # Model box
-        self.model_box = QtWidgets.QLineEdit(self.updt_window)
-        self.model_box.setGeometry(60, 260, 230, 30)
-        self.model_box.setFont(QtGui.QFont("Arial", 11))
-        self.model_box.setStyleSheet("background-color: white; border-radius: 10px;")
-        self.model_box.setAlignment(Qt.AlignCenter)
+            # Model box
+            self.model_box = QtWidgets.QLineEdit(self.updt_window)
+            self.model_box.setGeometry(60, 260, 230, 30)
+            self.model_box.setFont(QtGui.QFont("Arial", 11))
+            self.model_box.setStyleSheet("background-color: white; border-radius: 10px;")
+            self.model_box.setAlignment(Qt.AlignCenter)
 
-        # Model Label
-        self.model_label = QtWidgets.QLabel(self.updt_window)
-        self.model_label.setGeometry(65, 293, 100, 18)
-        self.model_label.setStyleSheet("color: black")
-        self.model_label.setFont(lbl_font)
-        self.model_label.setText("Model")
+            # Model Label
+            self.model_label = QtWidgets.QLabel(self.updt_window)
+            self.model_label.setGeometry(65, 293, 100, 18)
+            self.model_label.setStyleSheet("color: black")
+            self.model_label.setFont(lbl_font)
+            self.model_label.setText("Model")
 
-        # Remarks Box
-        self.remarks_box = QtWidgets.QLineEdit(self.updt_window)
-        self.remarks_box.setGeometry(60, 330, 200, 30)
-        self.remarks_box.setFont(QtGui.QFont("Arial", 11))
-        self.remarks_box.setStyleSheet("background-color: white; border-radius: 10px;")
+            # Remarks Box
+            self.remarks_box = QtWidgets.QLineEdit(self.updt_window)
+            self.remarks_box.setGeometry(60, 330, 200, 30)
+            self.remarks_box.setFont(QtGui.QFont("Arial", 11))
+            self.remarks_box.setStyleSheet("background-color: white; border-radius: 10px;")
 
-        # Remarks Label
-        self.remarks_label = QtWidgets.QLabel(self.updt_window)
-        self.remarks_label.setGeometry(65, 360, 100, 18)
-        self.remarks_label.setStyleSheet("color: black")
-        self.remarks_label.setFont(lbl_font)
-        self.remarks_label.setText("Remarks")
+            # Remarks Label
+            self.remarks_label = QtWidgets.QLabel(self.updt_window)
+            self.remarks_label.setGeometry(65, 360, 100, 18)
+            self.remarks_label.setStyleSheet("color: black")
+            self.remarks_label.setFont(lbl_font)
+            self.remarks_label.setText("Remarks")
 
-        # Update Button
-        self.update_btn = QtWidgets.QPushButton(self.updt_window)
-        self.update_btn.setGeometry(100, 420, 100, 30)
-        self.update_btn.setText("Update")
-        self.update_btn.setStyleSheet("background-color: white;")
-        self.update_btn.clicked.connect(update)
+            # Update Button
+            self.update_btn = QtWidgets.QPushButton(self.updt_window)
+            self.update_btn.setGeometry(100, 420, 100, 30)
+            self.update_btn.setText("Update")
+            self.update_btn.setStyleSheet("background-color: white;")
+            self.update_btn.clicked.connect(update)
 
-        # cancel button
-        self.cancel_btn = QtWidgets.QPushButton(self.updt_window)
-        self.cancel_btn.setGeometry(270, 420, 100, 30)
-        self.cancel_btn.setText("Cancel")
-        self.cancel_btn.setStyleSheet("background-color: white;")
-        self.cancel_btn.clicked.connect(cancel)
+            # cancel button
+            self.cancel_btn = QtWidgets.QPushButton(self.updt_window)
+            self.cancel_btn.setGeometry(270, 420, 100, 30)
+            self.cancel_btn.setText("Cancel")
+            self.cancel_btn.setStyleSheet("background-color: white;")
+            self.cancel_btn.clicked.connect(cancel)
 
-        # set the selected value to the box
-        self.itemname_box.setText(self.selected_values["itemname"])
-        self.quantity_box.setText(self.selected_values["quantity"])
-        self.unit_box.setText(self.selected_values["unit"])
-        self.model_box.setText(self.selected_values["model_name"])
-        self.remarks_box.setText(self.selected_values["remarks"])
+            # set the selected value to the box
+            self.itemname_box.setText(self.selected_values["itemname"])
+            self.quantity_box.setText(self.selected_values["quantity"])
+            self.unit_box.setText(self.selected_values["unit"])
+            self.model_box.setText(self.selected_values["model_name"])
+            self.remarks_box.setText(self.selected_values["remarks"])
 
-        self.table.itemSelectionChanged.connect(self.show_selected)
-        self.updt_window.setWindowModality(Qt.ApplicationModal)
-        self.updt_window.show()
+            self.table.itemSelectionChanged.connect(self.show_selected)
+            self.updt_window.setWindowModality(Qt.ApplicationModal)
+            self.updt_window.show()
+        except:
+            QtWidgets.QMessageBox.critical(self.updt_window, "Error", "No Data Selected ")
 
     def search_btn_clicked(self):
         def click():
