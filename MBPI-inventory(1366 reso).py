@@ -385,7 +385,7 @@ class Ui_LoginWindow(object):
 
             # Remarks Label
             self.remarks_label = QtWidgets.QLabel(self.login_window)
-            self.remarks_label.setGeometry(290, 590, 200, 55)
+            self.remarks_label.setGeometry(290, 576, 200, 60)
             self.remarks_label.setText(self.selected_values["remarks"])
             self.remarks_label.setStyleSheet(stylesheet)
             self.remarks_label.setWordWrap(True)
