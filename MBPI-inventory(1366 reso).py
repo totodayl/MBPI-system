@@ -81,10 +81,9 @@ class Ui_LoginWindow(object):
                 print("Connected Successfully")
                 self.launch_main()
 
+
             else:
                 QtWidgets.QMessageBox.critical(self.login_window, "Invalid Credentials", "Username and Password doesnt match.")
-
-
 
         except Exception as e:
             print("Invalid Credentials:", e)
@@ -92,6 +91,7 @@ class Ui_LoginWindow(object):
     # This is the main window after login screen
     def launch_main(self):
         # Delete widgets
+
         try:
             self.username.deleteLater()
             self.password.deleteLater()
@@ -271,6 +271,7 @@ class Ui_LoginWindow(object):
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
         self.delete_btn_icon.clicked.connect(self.delete_btn_clicked)
         self.delete_btn_icon.show()
+
 
     # getting the table dimension
     def get_table(self, query="""SELECT control_num, itemname, quantity, unit, model_name, remarks, encoded_by,
