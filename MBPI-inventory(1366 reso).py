@@ -77,7 +77,11 @@ class Ui_LoginWindow(object):
             SELECT * FROM users
             WHERE username = '{username}' AND password = '{pword}' 
             """)
-            if len(cursor.fetchall()) == 1:
+            result = cursor.fetchall()
+            self.fname = result[0][2]
+            self.lname = result[0][3]
+            self.full_name = self.fname + " " + self.lname  # Parsing the Full Name
+            if len(result) == 1:
                 print("Connected Successfully")
                 self.launch_main()
 
@@ -378,7 +382,9 @@ class Ui_LoginWindow(object):
             # Username Label
             self.username_label = QtWidgets.QLabel(self.login_window)
             self.username_label.setGeometry(40, 590, 120, 25)
-            self.username_label.setText(self.selected_values["encoded_by"])
+            fname = self.selected_values["encoded_by"].split(' ')[:-1]
+            fname = " ".join(fname) + " " +self.selected_values["encoded_by"].split(" ")[-1][0] + '.'
+            self.username_label.setText(fname)
             self.username_label.setAlignment(Qt.AlignCenter)
             self.username_label.setFont(font)
             self.username_label.show()
@@ -480,9 +486,9 @@ class Ui_LoginWindow(object):
                 self.parse_inputs()  # get the inputs from user
                 if self.user_inputs['itemname'].strip() != '' and self.user_inputs['quantity'] != '':
                     cursor.execute(f"""
-                        INSERT INTO tbl_maintenance (itemname, quantity, unit, model_name, remarks, date_encoded)
+                        INSERT INTO tbl_maintenance (itemname, quantity, unit, model_name, remarks, date_encoded, encoded_by)
                         VALUES ('{self.user_inputs["itemname"]}', '{self.user_inputs["quantity"]}', '{self.user_inputs["unit"]}', 
-                        '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}', '{self.formattedDateTime}')
+                        '{self.user_inputs["model_name"]}', '{self.user_inputs["remarks"]}', '{self.formattedDateTime}', '{self.full_name}')
 
                                                                                     """)
 
@@ -623,7 +629,8 @@ class Ui_LoginWindow(object):
                     cursor.execute((f"""UPDATE tbl_maintenance
                                         SET itemname = '{self.user_inputs["itemname"]}', quantity = {self.user_inputs["quantity"]}, 
                                         unit = '{self.user_inputs["unit"]}', model_name = '{self.user_inputs["model_name"]}',
-                                        remarks = '{self.user_inputs["remarks"]}', last_updated = '{self.formattedDateTime}'
+                                        remarks = '{self.user_inputs["remarks"]}', last_updated = '{self.formattedDateTime}',
+                                        updated_by = '{self.full_name}'
                                         WHERE control_num = {self.selected_values["ctrl_num"]}
                                 """))
 
@@ -822,7 +829,6 @@ class Ui_LoginWindow(object):
 
             except Exception as e:
                 # Handle the error, e.g., inform the user or log the error
-                print(e)
                 QtWidgets.QMessageBox.critical(self.login_window, "Non Results",
                                                f"No items found matching the search criteria.")
                 self.conn.rollback()
