@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, pyqtSignal
 import psycopg2
 import db_connections as dbcon
-
+from PyQt5.QtGui import QPixmap
 
 
 # Used for icons to be Clickable
@@ -26,14 +26,12 @@ class Ui_LoginWindow(object):
         self.username.setAutoFillBackground(False)
         self.username.setStyleSheet("background-color: rgb(255, 255, 255); border-radius: 5px")
         self.username.setObjectName("username")
-        self.username.setText("postgres")
         self.password = QtWidgets.QLineEdit(self.login_window)
         self.password.setGeometry(QtCore.QRect(310, 230, 171, 31))
         self.password.setAutoFillBackground(False)
         self.password.setStyleSheet("background-color: rgb(255, 255, 255); border-radius: 5px")
         self.password.setObjectName("password")
         self.password.setEchoMode(QtWidgets.QLineEdit.Password)
-        self.password.setText("mbpi")
         self.login_btn = QtWidgets.QPushButton(self.login_window)
         self.login_btn.setGeometry(QtCore.QRect(360, 340, 75, 23))
         self.login_btn.setStyleSheet("\n"
@@ -63,7 +61,7 @@ class Ui_LoginWindow(object):
 
     def login(self):
         username = self.username.text()
-        pass1 = self.password.text()
+        pword = self.password.text()
 
         try:
             self.conn = psycopg2.connect(
@@ -72,26 +70,40 @@ class Ui_LoginWindow(object):
                 dbname=dbcon.dbname,
                 user=dbcon.user,
                 password=dbcon.password)
+
             global cursor
             cursor = self.conn.cursor()
-            print("Connected Successfully")
-            self.launch_main()
+            cursor.execute(f"""
+            SELECT * FROM users
+            WHERE username = '{username}' AND password = '{pword}' 
+            """)
+            if len(cursor.fetchall()) == 1:
+                print("Connected Successfully")
+                self.launch_main()
+
+
+            else:
+                QtWidgets.QMessageBox.critical(self.login_window, "Invalid Credentials", "Username and Password doesnt match.")
+
         except Exception as e:
             print("Invalid Credentials:", e)
 
     # This is the main window after login screen
     def launch_main(self):
         # Delete widgets
-        self.username.deleteLater()
-        self.password.deleteLater()
-        self.login_btn.deleteLater()
 
+        try:
+            self.username.deleteLater()
+            self.password.deleteLater()
+            self.login_btn.deleteLater()
+        except:
+            pass
         self.login_window.setStyleSheet("background-color: white")
         # Setting the size and position of the main window
-        LoginWindow.setFixedSize(1200, 900)  # fixed size
-        LoginWindow.move(360, 100)
+        LoginWindow.setFixedSize(1000, 720)  # fixed size
+        LoginWindow.move(200, 0)
 
-        label_font = QtGui.QFont("Arial", 15)
+        label_font = QtGui.QFont("Arial", 14)
         label_font.setBold(True)
 
         # add the table to the Window
@@ -101,7 +113,7 @@ class Ui_LoginWindow(object):
         # This part below is for Information Box
 
         self.info_box = QtWidgets.QWidget(self.login_window)
-        self.info_box.setGeometry(QtCore.QRect(80, 560, 1031, 270))
+        self.info_box.setGeometry(QtCore.QRect(25, 430, 850, 220))
         self.info_box.setStyleSheet("""
         background-color: white;
         border-top-left-radius: 20px; 
@@ -113,86 +125,87 @@ class Ui_LoginWindow(object):
         self.info_box.show()
 
         self.info_border = QtWidgets.QWidget(self.login_window)
-        self.info_border.setGeometry(QtCore.QRect(80, 560, 1031, 60))
+        self.info_border.setGeometry(QtCore.QRect(25, 430, 850, 40))
         self.info_border.setStyleSheet(
             "background-color: rgb(0,109,184); border-top-left-radius: 20px; border-top-right-radius: 20px;")
         self.info_border.show()
 
         # Control Number Label
         self.ctrlnum_label = QtWidgets.QLabel(self.login_window)
-        self.ctrlnum_label.setGeometry(90, 575, 200, 30)
+        self.ctrlnum_label.setGeometry(30, 440, 150, 25)
         self.ctrlnum_label.setStyleSheet("background-color: rgb(0,109,184); color : white;")
         self.ctrlnum_label.setText("Control Number:")
-        self.ctrlnum_label.setFont(QtGui.QFont("Arial", 17))
+        self.ctrlnum_label.setFont(QtGui.QFont("Arial", 15))
         self.ctrlnum_label.show()
 
         # Date Created Label
         self.dateCreatedLabel = QtWidgets.QLabel(self.login_window)
-        self.dateCreatedLabel.setGeometry(750, 575, 160, 30)
+        self.dateCreatedLabel.setGeometry(580, 440, 160, 30)
         self.dateCreatedLabel.setText("Date Created:")
         self.dateCreatedLabel.setStyleSheet("background-color: rgb(0,109,184); color : white;")
-        self.dateCreatedLabel.setFont(QtGui.QFont("Arial", 17))
+        self.dateCreatedLabel.setFont(QtGui.QFont("Arial", 15))
         self.dateCreatedLabel.show()
 
         # User Icon
         self.user_icon = QtWidgets.QLabel(self.login_window)
-        pixmap = QtGui.QPixmap("user.png")
+        pixmap: QPixmap = QtGui.QPixmap("user.png")
+        pixmap = pixmap.scaled(100,100)
         self.user_icon.setPixmap(pixmap)
-        self.user_icon.setGeometry(125, 630, 128, 128)
+        self.user_icon.setGeometry(50, 490, 100, 100)
         self.user_icon.show()
 
         # Itemname Label
         self.itemname_label = QtWidgets.QLabel(self.login_window)
-        self.itemname_label.setGeometry(330, 635, 110, 30)
+        self.itemname_label.setGeometry(190, 490, 110, 30)
         self.itemname_label.setText("Item Name:")
         self.itemname_label.setFont(label_font)
         self.itemname_label.show()
 
         # Model Name Label
         self.model_label = QtWidgets.QLabel(self.login_window)
-        self.model_label.setGeometry(330, 700, 130, 30)
+        self.model_label.setGeometry(190, 540, 130, 30)
         self.model_label.setText("Model Name:")
         self.model_label.setFont(label_font)
         self.model_label.show()
 
         # Remarks Label
         self.remarks_label = QtWidgets.QLabel(self.login_window)
-        self.remarks_label.setGeometry(330, 765, 100, 30)
+        self.remarks_label.setGeometry(190, 590, 100, 30)
         self.remarks_label.setText("Remarks:")
         self.remarks_label.setFont(label_font)
         self.remarks_label.show()
 
         # Quantity Label
         self.quantity_label = QtWidgets.QLabel(self.login_window)
-        self.quantity_label.setGeometry(720, 635, 90, 30)
+        self.quantity_label.setGeometry(547, 490, 90, 30)
         self.quantity_label.setText("Quantity:")
         self.quantity_label.setFont(label_font)
         self.quantity_label.show()
 
         # Unit Label
         self.unit_label = QtWidgets.QLabel(self.login_window)
-        self.unit_label.setGeometry(935, 635, 45, 30)
+        self.unit_label.setGeometry(735, 490, 45, 30)
         self.unit_label.setText("Unit:")
         self.unit_label.setFont(label_font)
         self.unit_label.show()
 
         # Updated By Label
         self.updatedby_label = QtWidgets.QLabel(self.login_window)
-        self.updatedby_label.setGeometry(720, 700, 120, 30)
+        self.updatedby_label.setGeometry(520, 540, 120, 30)
         self.updatedby_label.setText("Updated By:")
         self.updatedby_label.setFont(label_font)
         self.updatedby_label.show()
 
         # Updated Date Label
         self.updatedDate_label = QtWidgets.QLabel(self.login_window)
-        self.updatedDate_label.setGeometry(720, 765, 120, 30)
+        self.updatedDate_label.setGeometry(518, 590, 120, 30)
         self.updatedDate_label.setText("Last Update:")
         self.updatedDate_label.setFont(label_font)
         self.updatedDate_label.show()
 
         # Date Label
         self.date_label = QtWidgets.QLabel(self.login_window)
-        self.date_label.setGeometry(QtCore.QRect(1000, 10, 150, 30))
+        self.date_label.setGeometry(QtCore.QRect(735, 15, 150, 25))
         self.date_label.setFont(QtGui.QFont("Arial", 12))
         self.date_label.setStyleSheet("background-color: white; color : red")
         self.date_label.show()
@@ -203,10 +216,11 @@ class Ui_LoginWindow(object):
 
         # Home Button refreshes the table
         self.home_btn_icon = ClickableLabel(self.login_window)
-        self.home_btn_icon.setGeometry(1125, 100, 50, 50)  # Set size and position
+        self.home_btn_icon.setGeometry(925, 50, 50, 50)  # Set size and position
         self.home_btn_icon.setPixmap(QtGui.QIcon('home_icon.png').pixmap(50, 50))  # Set icon
         self.home_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.home_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+        self.home_btn_icon.setToolTip("Home")  # Add Text Label when user hover to the logo
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
         self.home_btn_icon.clicked.connect(self.show_table)
@@ -214,10 +228,11 @@ class Ui_LoginWindow(object):
 
         # Add Entry Button
         self.add_btn_icon = ClickableLabel(self.login_window)
-        self.add_btn_icon.setGeometry(1125, 175, 50, 50)  # Set size and position
+        self.add_btn_icon.setGeometry(925, 125, 50, 50)  # Set size and position
         self.add_btn_icon.setPixmap(QtGui.QIcon('add.png').pixmap(50, 50))  # Set icon
         self.add_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.add_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+        self.add_btn_icon.setToolTip("Add Data") # Add Text Label when user hover to the logo
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
         self.add_btn_icon.clicked.connect(self.add_btn_clicked)
@@ -225,34 +240,38 @@ class Ui_LoginWindow(object):
 
         # Update Entry Button
         self.update_btn_icon = ClickableLabel(self.login_window)
-        self.update_btn_icon.setGeometry(1125, 250, 50, 50)  # Set size and position
+        self.update_btn_icon.setGeometry(925, 200, 50, 50)  # Set size and position
         self.update_btn_icon.setPixmap(QtGui.QIcon('update.png').pixmap(50, 50))  # Set icon
         self.update_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.update_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+        self.update_btn_icon.setToolTip("Update Data") # Add Text Label when user hover to the logo
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
         self.update_btn_icon.clicked.connect(self.update_btn_clicked)
         self.update_btn_icon.show()
 
         self.filter_btn_icon = ClickableLabel(self.login_window)
-        self.filter_btn_icon.setGeometry(1125, 325, 50, 50)  # Set size and position
+        self.filter_btn_icon.setGeometry(925, 275, 50, 50)  # Set size and position
         self.filter_btn_icon.setPixmap(QtGui.QIcon('filter.png').pixmap(50, 50))  # Set icon
         self.filter_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.filter_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+        self.filter_btn_icon.setToolTip("Filter Data") # Add Text Label when user hover to the logo
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
         self.filter_btn_icon.clicked.connect(self.search_btn_clicked)
         self.filter_btn_icon.show()
 
         self.delete_btn_icon = ClickableLabel(self.login_window)
-        self.delete_btn_icon.setGeometry(1125, 400, 50, 50)  # Set size and position
+        self.delete_btn_icon.setGeometry(925, 350, 50, 50)  # Set size and position
         self.delete_btn_icon.setPixmap(QtGui.QIcon('delete2.png').pixmap(50, 50))  # Set icon
         self.delete_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.delete_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+        self.delete_btn_icon.setToolTip("Delete") # Add Text Label when user hover to the logo
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
         self.delete_btn_icon.clicked.connect(self.delete_btn_clicked)
         self.delete_btn_icon.show()
+
 
     # getting the table dimension
     def get_table(self, query="""SELECT control_num, itemname, quantity, unit, model_name, remarks, encoded_by,
@@ -268,7 +287,7 @@ class Ui_LoginWindow(object):
         self.table = QtWidgets.QTableWidget(self.login_window)
 
         # Set table size
-        self.table.setGeometry(QtCore.QRect(100, 50, 1000, 450))
+        self.table.setGeometry(QtCore.QRect(10, 50, 900, 350))
         self.table.setObjectName("table")
         self.table.setStyleSheet("background-color: rgb(0,109,189); "
                                  "gridline-color: 2px solid black ;"
@@ -334,7 +353,7 @@ class Ui_LoginWindow(object):
             # show the selected values in the UI
 
             # set fontstyle
-            font = QtGui.QFont("Arial", 15)
+            font = QtGui.QFont("Arial", 13)
             font.setBold(True)
 
             # set stylesheet
@@ -342,23 +361,23 @@ class Ui_LoginWindow(object):
 
             # Control Number Label
             self.ctrlnum_label = QtWidgets.QLabel(self.login_window)
-            self.ctrlnum_label.setGeometry(260, 575, 100, 30)
+            self.ctrlnum_label.setGeometry(180, 440, 100, 25)
             self.ctrlnum_label.setText(self.selected_values["ctrl_num"])
-            self.ctrlnum_label.setFont(QtGui.QFont("Arial", 17))
+            self.ctrlnum_label.setFont(QtGui.QFont("Arial", 15))
             self.ctrlnum_label.setStyleSheet("background-color: rgb(0,109,184)")
             self.ctrlnum_label.show()
 
             # Date Created Label
             self.dateCreatedLabel = QtWidgets.QLabel(self.login_window)
-            self.dateCreatedLabel.setGeometry(900, 575, 160, 30)
+            self.dateCreatedLabel.setGeometry(715, 440, 120, 25)
             self.dateCreatedLabel.setText(self.selected_values["date_encoded"])
-            self.dateCreatedLabel.setFont(QtGui.QFont("Arial", 17))
+            self.dateCreatedLabel.setFont(QtGui.QFont("Arial", 15))
             self.dateCreatedLabel.setStyleSheet("background-color: rgb(0,109,184)")
             self.dateCreatedLabel.show()
 
             # Username Label
             self.username_label = QtWidgets.QLabel(self.login_window)
-            self.username_label.setGeometry(100, 770, 180, 30)
+            self.username_label.setGeometry(40, 590, 120, 25)
             self.username_label.setText(self.selected_values["encoded_by"])
             self.username_label.setAlignment(Qt.AlignCenter)
             self.username_label.setFont(font)
@@ -366,7 +385,7 @@ class Ui_LoginWindow(object):
 
             # Itemname Label
             self.itemname_label = QtWidgets.QLabel(self.login_window)
-            self.itemname_label.setGeometry(450, 635, 260, 30)
+            self.itemname_label.setGeometry(300, 490, 230, 30)
             self.itemname_label.setText(self.selected_values["itemname"])
             self.itemname_label.setStyleSheet(stylesheet)
             self.itemname_label.setFont(font)
@@ -374,7 +393,7 @@ class Ui_LoginWindow(object):
 
             # Model Label
             self.model_label = QtWidgets.QLabel(self.login_window)
-            self.model_label.setGeometry(460, 700, 230, 30)
+            self.model_label.setGeometry(320, 540, 200, 30)
             self.model_label.setText(self.selected_values["model_name"])
             self.model_label.setStyleSheet(stylesheet)
             self.model_label.setFont(font)
@@ -382,15 +401,16 @@ class Ui_LoginWindow(object):
 
             # Remarks Label
             self.remarks_label = QtWidgets.QLabel(self.login_window)
-            self.remarks_label.setGeometry(440, 765, 260, 30)
+            self.remarks_label.setGeometry(290, 576, 200, 60)
             self.remarks_label.setText(self.selected_values["remarks"])
             self.remarks_label.setStyleSheet(stylesheet)
+            self.remarks_label.setWordWrap(True)
             self.remarks_label.setFont(font)
             self.remarks_label.show()
 
             # Quantity Label
             self.quantity_label = QtWidgets.QLabel(self.login_window)
-            self.quantity_label.setGeometry(815, 635, 115, 30)
+            self.quantity_label.setGeometry(637, 495, 90, 25)
             self.quantity_label.setStyleSheet(stylesheet)
             self.quantity_label.setFont(font)
             self.quantity_label.setText(self.selected_values["quantity"])
@@ -398,7 +418,7 @@ class Ui_LoginWindow(object):
 
             # Unit Label
             self.unit_label = QtWidgets.QLabel(self.login_window)
-            self.unit_label.setGeometry(990, 635, 115, 30)
+            self.unit_label.setGeometry(785, 495, 80, 25)
             self.unit_label.setStyleSheet(stylesheet)
             self.unit_label.setFont(font)
             self.unit_label.setText(self.selected_values["unit"])
@@ -406,7 +426,7 @@ class Ui_LoginWindow(object):
 
             # UpdatedBy Label
             self.updatedby_label = QtWidgets.QLabel(self.login_window)
-            self.updatedby_label.setGeometry(850, 700, 115, 30)
+            self.updatedby_label.setGeometry(640, 545, 115, 25)
             self.updatedby_label.setStyleSheet(stylesheet)
             self.updatedby_label.setFont(font)
             self.updatedby_label.setText(self.selected_values["updated_by"])
@@ -414,7 +434,7 @@ class Ui_LoginWindow(object):
 
             # Updated Date Label
             self.updatedDate_label = QtWidgets.QLabel(self.login_window)
-            self.updatedDate_label.setGeometry(850, 765, 215, 30)
+            self.updatedDate_label.setGeometry(638, 595, 160, 25)
             self.updatedDate_label.setStyleSheet("color: rgb(0,255,0)")
             self.updatedDate_label.setFont(font)
             self.updatedDate_label.setText(self.selected_values["last_updated"])
@@ -496,7 +516,7 @@ class Ui_LoginWindow(object):
         self.add_window = QtWidgets.QWidget()
         self.add_window.setWindowTitle("ADD Data")
         self.add_window.setStyleSheet("background-color : rgba(30,131,177,255)")
-        self.add_window.setGeometry(750, 420, 500, 400)
+        self.add_window.setGeometry(450, 150, 500, 400)
         self.add_window.setFixedSize(450, 500)
 
         # item name combo box
@@ -513,7 +533,7 @@ class Ui_LoginWindow(object):
 
         # Itemname Label
         self.itemname_label = QtWidgets.QLabel(self.add_window)
-        self.itemname_label.setGeometry(65, 133, 100, 18)
+        self.itemname_label.setGeometry(65, 148, 100, 18)
         self.itemname_label.setStyleSheet("color: black")
         self.itemname_label.setFont(lbl_font)
         self.itemname_label.setText("Itemname")
@@ -635,7 +655,7 @@ class Ui_LoginWindow(object):
         self.updt_window = QtWidgets.QWidget()
         self.updt_window.setWindowTitle("Update Data")
         self.updt_window.setStyleSheet("background-color : rgba(30,131,177,255)")
-        self.updt_window.setGeometry(750, 420, 500, 400)
+        self.updt_window.setGeometry(450, 150, 500, 400)
         self.updt_window.setFixedSize(450, 500)
 
         # Itemname Box
@@ -817,7 +837,7 @@ class Ui_LoginWindow(object):
         self.search_window = QtWidgets.QWidget()
         self.search_window.setWindowTitle("Filter Data")
         self.search_window.setStyleSheet("background-color : rgba(30,131,177,255)")
-        self.search_window.setGeometry(750, 420, 500, 400)
+        self.search_window.setGeometry(450, 150, 500, 400)
         self.search_window.setFixedSize(450, 500)
 
         # Itemname Box
