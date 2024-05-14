@@ -210,6 +210,7 @@ class Ui_LoginWindow(object):
         self.home_btn_icon.setPixmap(QtGui.QIcon('home_icon.png').pixmap(50, 50))  # Set icon
         self.home_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.home_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+        self.home_btn_icon.setToolTip("Home")  # Add Text Label when user hover to the logo
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
         self.home_btn_icon.clicked.connect(self.show_table)
@@ -221,6 +222,7 @@ class Ui_LoginWindow(object):
         self.add_btn_icon.setPixmap(QtGui.QIcon('add.png').pixmap(50, 50))  # Set icon
         self.add_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.add_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+        self.add_btn_icon.setToolTip("Add Data") # Add Text Label when user hover to the logo
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
         self.add_btn_icon.clicked.connect(self.add_btn_clicked)
@@ -232,6 +234,7 @@ class Ui_LoginWindow(object):
         self.update_btn_icon.setPixmap(QtGui.QIcon('update.png').pixmap(50, 50))  # Set icon
         self.update_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.update_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+        self.update_btn_icon.setToolTip("Update Data") # Add Text Label when user hover to the logo
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
         self.update_btn_icon.clicked.connect(self.update_btn_clicked)
@@ -242,6 +245,7 @@ class Ui_LoginWindow(object):
         self.filter_btn_icon.setPixmap(QtGui.QIcon('filter.png').pixmap(50, 50))  # Set icon
         self.filter_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.filter_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+        self.filter_btn_icon.setToolTip("Filter Data") # Add Text Label when user hover to the logo
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
         self.filter_btn_icon.clicked.connect(self.search_btn_clicked)
@@ -252,6 +256,7 @@ class Ui_LoginWindow(object):
         self.delete_btn_icon.setPixmap(QtGui.QIcon('delete2.png').pixmap(50, 50))  # Set icon
         self.delete_btn_icon.setScaledContents(True)  # Scale icon to fit the label
         self.delete_btn_icon.setCursor(Qt.PointingHandCursor)  # Change cursor to a pointing hand
+        self.delete_btn_icon.setToolTip("Delete") # Add Text Label when user hover to the logo
 
         # Connect the clicked signal of the QLabel to the on_icon_clicked slot
         self.delete_btn_icon.clicked.connect(self.delete_btn_clicked)
